@@ -127,7 +127,7 @@ fastmcp-slim==3.4.8
     #   pydantic-ai-slim
 fastuuid==0.14.0
     # via litellm
-filelock==3.18.0
+filelock==3.20.3
     # via huggingface-hub
 frozenlist==1.7.0
     # via
@@ -357,7 +357,7 @@ propcache==0.3.2
     # via
     #   aiohttp
     #   yarl
-protobuf==5.29.5
+protobuf==5.29.6
     # via
     #   googleapis-common-protos
     #   logfire
@@ -368,7 +368,7 @@ psutil==7.0.0
     # via codewiki (pyproject.toml)
 py-key-value-aio==0.4.6
     # via fastmcp-slim
-pyasn1==0.6.1
+pyasn1==0.6.4
     # via pyasn1-modules
 pyasn1-modules==0.4.2
     # via google-auth
@@ -399,9 +399,9 @@ pydantic==2.12.5
     #   pydantic-handlebars
     #   pydantic-settings
     #   xai-sdk
-pydantic-ai==1.107.6
+pydantic-ai==1.107.7
     # via codewiki (pyproject.toml)
-pydantic-ai-slim==1.107.6
+pydantic-ai-slim==2.55.0
     # via
     #   pydantic-ai
     #   pydantic-evals
@@ -420,7 +420,7 @@ pydantic-settings==2.10.1
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
     #   mcp
-pygments==2.19.2
+pygments==2.20.0
     # via
     #   rich
     #   rich-rst
@@ -434,7 +434,7 @@ python-dateutil==2.9.0.post0
     # via
     #   botocore
     #   mistralai
-python-dotenv==1.1.1
+python-dotenv==1.2.2
     # via
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
@@ -462,7 +462,7 @@ referencing==0.36.2
     #   jsonschema-specifications
 regex==2025.7.34
     # via tiktoken
-requests==2.32.4
+requests==2.33.0
     # via
     #   codewiki (pyproject.toml)
     #   cohere
