@@ -128,7 +128,9 @@ fastmcp-slim==3.4.8
 fastuuid==0.14.0
     # via litellm
 filelock==3.18.0
-    # via huggingface-hub
+    # via
+    #   codewiki (pyproject.toml)
+    #   huggingface-hub
 frozenlist==1.7.0
     # via
     #   aiohttp
@@ -359,6 +361,7 @@ propcache==0.3.2
     #   yarl
 protobuf==5.29.5
     # via
+    #   codewiki (pyproject.toml)
     #   googleapis-common-protos
     #   logfire
     #   opentelemetry-proto
@@ -369,7 +372,9 @@ psutil==7.0.0
 py-key-value-aio==0.4.6
     # via fastmcp-slim
 pyasn1==0.6.1
-    # via pyasn1-modules
+    # via
+    #   codewiki (pyproject.toml)
+    #   pyasn1-modules
 pyasn1-modules==0.4.2
     # via google-auth
 pycares==4.11.0
@@ -422,6 +427,7 @@ pydantic-settings==2.10.1
     #   mcp
 pygments==2.19.2
     # via
+    #   codewiki (pyproject.toml)
     #   rich
     #   rich-rst
 pyjwt==2.15.1
