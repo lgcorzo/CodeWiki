@@ -404,9 +404,9 @@ pydantic==2.12.5
     #   pydantic-handlebars
     #   pydantic-settings
     #   xai-sdk
-pydantic-ai==1.107.7
+pydantic-ai==1.107.6
     # via codewiki (pyproject.toml)
-pydantic-ai-slim==2.56.0
+pydantic-ai-slim==1.107.6
     # via
     #   pydantic-ai
     #   pydantic-evals
