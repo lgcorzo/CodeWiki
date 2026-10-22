@@ -170,7 +170,9 @@ async def serve_doc(filename: str):
     base_dir = os.path.abspath(DOCS_FOLDER)
     target_file = os.path.abspath(os.path.join(base_dir, filename))
 
-    if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(target_file, base_dir):
+    if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(
+        target_file, base_dir
+    ):
         raise HTTPException(status_code=403, detail="Access denied")
 
     file_path = Path(target_file)
