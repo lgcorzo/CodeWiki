@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from typing import Dict, Optional
@@ -24,7 +25,7 @@ from markdown_it import MarkdownIt
 from .template_utils import render_template
 from .templates import DOCS_VIEW_TEMPLATE
 from codewiki.src.be.doc_layout import doc_path_map
-from codewiki.src.utils import file_manager
+from codewiki.src.utils import file_manager, is_safe_path
 
 app = FastAPI(
     title="Documentation Server",
@@ -165,16 +166,16 @@ async def serve_doc(filename: str):
     if not filename.endswith(".md"):
         raise HTTPException(status_code=404, detail="Only markdown files are supported")
 
-    file_path = Path(DOCS_FOLDER) / filename
-
     # Ensure the file is within the docs folder (prevent directory traversal)
-    try:
-        file_path = file_path.resolve()
-        docs_folder_resolved = Path(DOCS_FOLDER).resolve()
-        if not str(file_path).startswith(str(docs_folder_resolved)):
-            raise HTTPException(status_code=403, detail="Access denied")
-    except Exception:
-        raise HTTPException(status_code=403, detail="Invalid file path")
+    base_dir = os.path.abspath(DOCS_FOLDER)
+    target_file = os.path.abspath(os.path.join(base_dir, filename))
+
+    if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(
+        target_file, base_dir
+    ):
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    file_path = Path(target_file)
 
     if not file_path.exists():
         raise HTTPException(status_code=404, detail=f"File {filename} not found")

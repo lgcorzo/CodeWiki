@@ -1,6 +1,49 @@
 import os
 import json
-from typing import Any, Optional, Dict
+from pathlib import Path
+from typing import Any, Optional, Dict, Union
+from urllib.parse import urlparse
+
+
+def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> bool:
+    """
+    Check if target_path resolves within base_dir to prevent path injection / directory traversal.
+    Uses os.path.abspath and os.path.commonpath.
+    """
+    try:
+        abs_base = os.path.abspath(str(base_dir))
+        abs_target = os.path.abspath(str(target_path))
+        return os.path.commonpath([abs_target, abs_base]) == abs_base
+    except Exception:
+        return False
+
+
+def is_safe_url(target_url: str, allowed_hosts: Optional[set] = None) -> bool:
+    """
+    Check if target_url is safe for redirection (prevents Open Redirect).
+    Accepts only local relative paths (e.g., starting with '/' but not '//' or '\\')
+    or URLs whose netloc is explicitly allowed.
+    """
+    if not target_url or not isinstance(target_url, str):
+        return False
+
+    # Strip whitespace and control characters
+    target_url = target_url.strip()
+
+    # Reject scheme-relative URLs like '//evil.com' or backslash URLs like '/\evil.com'
+    if target_url.startswith("//") or target_url.startswith("/\\") or target_url.startswith("\\"):
+        return False
+
+    parsed = urlparse(target_url)
+
+    # If target has a scheme or netloc, ensure it's in allowed_hosts
+    if parsed.scheme or parsed.netloc:
+        if not allowed_hosts:
+            return False
+        return parsed.netloc in allowed_hosts
+
+    # Pure relative paths starting with / are allowed
+    return target_url.startswith("/")
 
 
 # ------------------------------------------------------------
