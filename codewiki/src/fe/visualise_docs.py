@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import os
 import sys
 from pathlib import Path
 from typing import Dict, Optional
@@ -165,12 +166,14 @@ async def serve_doc(filename: str):
     if not filename.endswith(".md"):
         raise HTTPException(status_code=404, detail="Only markdown files are supported")
 
-    file_path = Path(DOCS_FOLDER) / filename
-
     # Ensure the file is within the docs folder (prevent directory traversal)
-    if not is_safe_path(file_path, DOCS_FOLDER):
+    base_dir = os.path.abspath(DOCS_FOLDER)
+    target_file = os.path.abspath(os.path.join(base_dir, filename))
+
+    if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(target_file, base_dir):
         raise HTTPException(status_code=403, detail="Access denied")
-    file_path = file_path.resolve()
+
+    file_path = Path(target_file)
 
     if not file_path.exists():
         raise HTTPException(status_code=404, detail=f"File {filename} not found")

@@ -3,6 +3,7 @@
 FastAPI route handlers for the CodeWiki web application.
 """
 
+import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from dataclasses import asdict
@@ -170,12 +171,13 @@ class WebRoutes:
         if not docs_path.exists():
             raise HTTPException(status_code=404, detail="Documentation files not found")
 
-        redirect_url = f"/static-docs/{job_id}/"
-        if not is_safe_url(redirect_url):
+        # Sanitize redirect target to ensure it is purely relative and local
+        redirect_target = f"/static-docs/{job.job_id}/"
+        if not is_safe_url(redirect_target):
             raise HTTPException(status_code=400, detail="Invalid redirect target")
 
         # Redirect to the documentation viewer
-        return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(url=redirect_target, status_code=status.HTTP_302_FOUND)
 
     async def serve_generated_docs(
         self, job_id: str, filename: str = "overview.md"
@@ -242,10 +244,13 @@ class WebRoutes:
 
         # Serve the requested file (pages may sit in nested folders; never
         # outside the docs directory)
-        file_path = docs_path / filename
-        if not is_safe_path(file_path, docs_path):
+        base_dir = os.path.abspath(str(docs_path))
+        target_file = os.path.abspath(os.path.join(base_dir, filename))
+
+        if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(target_file, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")
-        file_path = file_path.resolve()
+
+        file_path = Path(target_file)
         if not file_path.is_file():
             raise HTTPException(status_code=404, detail=f"File {filename} not found")
 

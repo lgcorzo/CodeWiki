@@ -8,21 +8,12 @@ from urllib.parse import urlparse
 def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> bool:
     """
     Check if target_path resolves within base_dir to prevent path injection / directory traversal.
-    Uses both os.path.commonpath and pathlib.Path.resolve() containment checks.
+    Uses os.path.abspath and os.path.commonpath.
     """
     try:
-        base_path = Path(base_dir).resolve()
-        resolved_target = Path(target_path).resolve()
-
-        # Check pathlib relative_to containment
-        try:
-            resolved_target.relative_to(base_path)
-        except ValueError:
-            return False
-
-        # Check os.path.commonpath containment
-        common = os.path.commonpath([str(resolved_target), str(base_path)])
-        return os.path.abspath(common) == str(base_path)
+        abs_base = os.path.abspath(str(base_dir))
+        abs_target = os.path.abspath(str(target_path))
+        return os.path.commonpath([abs_target, abs_base]) == abs_base
     except Exception:
         return False
 
