@@ -2,7 +2,7 @@ import os
 import json
 from pathlib import Path
 from typing import Any, Optional, Dict, Union
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 
 
 def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> bool:
