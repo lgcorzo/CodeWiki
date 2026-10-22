@@ -24,7 +24,7 @@ from markdown_it import MarkdownIt
 from .template_utils import render_template
 from .templates import DOCS_VIEW_TEMPLATE
 from codewiki.src.be.doc_layout import doc_path_map
-from codewiki.src.utils import file_manager
+from codewiki.src.utils import file_manager, is_safe_path
 
 app = FastAPI(
     title="Documentation Server",
@@ -168,13 +168,9 @@ async def serve_doc(filename: str):
     file_path = Path(DOCS_FOLDER) / filename
 
     # Ensure the file is within the docs folder (prevent directory traversal)
-    try:
-        file_path = file_path.resolve()
-        docs_folder_resolved = Path(DOCS_FOLDER).resolve()
-        if not str(file_path).startswith(str(docs_folder_resolved)):
-            raise HTTPException(status_code=403, detail="Access denied")
-    except Exception:
-        raise HTTPException(status_code=403, detail="Invalid file path")
+    if not is_safe_path(file_path, DOCS_FOLDER):
+        raise HTTPException(status_code=403, detail="Access denied")
+    file_path = file_path.resolve()
 
     if not file_path.exists():
         raise HTTPException(status_code=404, detail=f"File {filename} not found")

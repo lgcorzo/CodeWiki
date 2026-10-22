@@ -20,7 +20,7 @@ from .templates import WEB_INTERFACE_TEMPLATE
 from .template_utils import render_template
 from .config import WebAppConfig
 from codewiki.src.be.doc_layout import doc_path_map
-from codewiki.src.utils import file_manager
+from codewiki.src.utils import file_manager, is_safe_path, is_safe_url
 
 
 class WebRoutes:
@@ -170,8 +170,12 @@ class WebRoutes:
         if not docs_path.exists():
             raise HTTPException(status_code=404, detail="Documentation files not found")
 
+        redirect_url = f"/static-docs/{job_id}/"
+        if not is_safe_url(redirect_url):
+            raise HTTPException(status_code=400, detail="Invalid redirect target")
+
         # Redirect to the documentation viewer
-        return RedirectResponse(url=f"/static-docs/{job_id}/", status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(url=redirect_url, status_code=status.HTTP_302_FOUND)
 
     async def serve_generated_docs(
         self, job_id: str, filename: str = "overview.md"
@@ -238,11 +242,10 @@ class WebRoutes:
 
         # Serve the requested file (pages may sit in nested folders; never
         # outside the docs directory)
-        file_path = (docs_path / filename).resolve()
-        try:
-            file_path.relative_to(docs_path.resolve())
-        except ValueError:
-            raise HTTPException(status_code=403, detail="Access denied") from None
+        file_path = docs_path / filename
+        if not is_safe_path(file_path, docs_path):
+            raise HTTPException(status_code=403, detail="Access denied")
+        file_path = file_path.resolve()
         if not file_path.is_file():
             raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
