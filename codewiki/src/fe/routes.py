@@ -254,9 +254,7 @@ class WebRoutes:
         except ValueError:
             raise HTTPException(status_code=403, detail="Access denied")
 
-        if common != base_dir or not is_safe_path(
-            target_file, base_dir
-        ):
+        if common != base_dir or not is_safe_path(target_file, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")
 
         file_path = Path(target_file)

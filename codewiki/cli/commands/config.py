@@ -704,8 +704,14 @@ def config_validate(quick: bool, verbose: bool):
                 hostname = (parsed_base.hostname or "").lower()
                 provider = getattr(config, "provider", "openai-compatible")
 
-                is_azure = provider == "azure-openai" or hostname.endswith(".openai.azure.com") or hostname == "openai.azure.com"
-                is_anthropic = hostname == "api.anthropic.com" or hostname.endswith(".api.anthropic.com")
+                is_azure = (
+                    provider == "azure-openai"
+                    or hostname.endswith(".openai.azure.com")
+                    or hostname == "openai.azure.com"
+                )
+                is_anthropic = hostname == "api.anthropic.com" or hostname.endswith(
+                    ".api.anthropic.com"
+                )
 
                 if is_azure:
                     # Use Azure OpenAI SDK

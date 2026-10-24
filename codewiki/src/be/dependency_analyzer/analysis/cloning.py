@@ -32,27 +32,21 @@ def sanitize_github_url(github_url: str) -> str:
     if url.startswith("www."):
         url = url[4:]
 
-    parsed = urlparse(github_url if "://" in github_url else f"http://{github_url}")
+    parsed = urlparse(github_url if "://" in github_url else f"https://{github_url}")
     hostname = (parsed.hostname or "").lower()
     is_github_host = hostname == "github.com" or hostname.endswith(".github.com")
 
-    if is_github_host or url.startswith("github.com/"):
-        path_str = parsed.path if "://" in github_url else url
-        if path_str.startswith("github.com/"):
-            path_str = path_str[11:]
-        url_parts = [p for p in path_str.strip("/").split("/") if p]
-        if len(url_parts) >= 2:
-            owner = url_parts[0]
-            repo = url_parts[1]
+    path_parts = [p for p in parsed.path.strip("/").split("/") if p]
+
+    if is_github_host:
+        if len(path_parts) >= 2:
+            owner = path_parts[0]
+            repo = path_parts[1]
         else:
             return github_url
-    elif "/" in url:
-        url_parts = [p for p in url.strip("/").split("/") if p]
-        if len(url_parts) >= 2:
-            owner = url_parts[0]
-            repo = url_parts[1]
-        else:
-            return github_url
+    elif len(path_parts) >= 2:
+        owner = path_parts[0]
+        repo = path_parts[1]
     else:
         return github_url
 
