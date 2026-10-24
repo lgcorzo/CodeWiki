@@ -204,7 +204,7 @@ def _cluster_via_llm(
         logger.warning(
             "Failed to parse LLM clustering response for %s; falling back. Error: %s.",
             module_label,
-            e,
+            type(e).__name__,
         )
         return {}
 
@@ -470,7 +470,7 @@ def _parse_super_group_response(response: str | None) -> dict[str, Any] | None:
     except Exception as e:  # noqa: BLE001 — a failed LLM call must not abort clustering
         logger.warning(
             "Failed to parse super-grouping response; keeping the flat module tree. Error: %s.",
-            e,
+            type(e).__name__,
         )
         return None
     if not isinstance(grouping, dict):
