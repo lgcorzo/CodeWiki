@@ -167,12 +167,19 @@ async def serve_doc(filename: str):
         raise HTTPException(status_code=404, detail="Only markdown files are supported")
 
     # Ensure the file is within the docs folder (prevent directory traversal)
-    base_dir = os.path.abspath(DOCS_FOLDER)
-    target_file = os.path.abspath(os.path.join(base_dir, filename))
+    clean_filename = os.path.normpath(filename.lstrip("/\\"))
+    if clean_filename.startswith("..") or os.path.isabs(clean_filename):
+        raise HTTPException(status_code=403, detail="Access denied")
 
-    if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(
-        target_file, base_dir
-    ):
+    base_dir = os.path.realpath(os.path.abspath(DOCS_FOLDER))
+    target_file = os.path.realpath(os.path.abspath(os.path.join(base_dir, clean_filename)))
+
+    try:
+        common = os.path.commonpath([target_file, base_dir])
+    except ValueError:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    if common != base_dir or not is_safe_path(target_file, base_dir):
         raise HTTPException(status_code=403, detail="Access denied")
 
     file_path = Path(target_file)

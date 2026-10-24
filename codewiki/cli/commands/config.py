@@ -593,7 +593,6 @@ def config_validate(quick: bool, verbose: bool):
 
             if verbose:
                 click.secho("      ✓ API key retrieved", fg="green")
-                click.secho(f"      ✓ Length: {len(api_key)} characters", fg="green")
             else:
                 click.secho("✓ API key present (stored in keychain)", fg="green")
 
