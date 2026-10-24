@@ -57,47 +57,47 @@ class FileManager:
     """Handles file I/O operations."""
 
     @staticmethod
-    def _validate_path(filepath: Union[str, Path]) -> str:
+    def _get_safe_path(filepath: Union[str, Path]) -> Path:
         path_str = str(filepath)
         if ".." in path_str:
             raise ValueError(f"Invalid path traversal in {filepath}")
-        return path_str
+        return Path(os.path.realpath(path_str))
 
     @staticmethod
     def ensure_directory(path: Union[str, Path]) -> None:
         """Create directory if it doesn't exist."""
-        path_str = FileManager._validate_path(path)
-        os.makedirs(path_str, exist_ok=True)
+        safe_path = FileManager._get_safe_path(path)
+        os.makedirs(safe_path, exist_ok=True)
 
     @staticmethod
     def save_json(data: Any, filepath: Union[str, Path]) -> None:
         """Save data as JSON to file."""
-        path_str = FileManager._validate_path(filepath)
-        with open(path_str, "w", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load_json(filepath: Union[str, Path]) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        path_str = FileManager._validate_path(filepath)
-        if not os.path.exists(path_str):
+        safe_path = FileManager._get_safe_path(filepath)
+        if not safe_path.exists():
             return None
 
-        with open(path_str, "r", encoding="utf-8") as f:
+        with open(safe_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
     def save_text(content: str, filepath: Union[str, Path]) -> None:
         """Save text content to file."""
-        path_str = FileManager._validate_path(filepath)
-        with open(path_str, "w", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     @staticmethod
     def load_text(filepath: Union[str, Path]) -> str:
         """Load text content from file."""
-        path_str = FileManager._validate_path(filepath)
-        with open(path_str, "r", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "r", encoding="utf-8") as f:
             return f.read()
 
 
