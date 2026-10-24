@@ -152,7 +152,10 @@ class WebRoutes:
 
     async def get_job_status(self, job_id: str) -> JobStatusResponse:
         """API endpoint to get job status."""
-        job = self.background_worker.get_job_status(job_id)
+        safe_job_id = os.path.basename(job_id)
+        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
+            raise HTTPException(status_code=400, detail="Invalid job ID")
+        job = self.background_worker.get_job_status(safe_job_id)
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
 
@@ -160,7 +163,10 @@ class WebRoutes:
 
     async def view_docs(self, job_id: str) -> RedirectResponse:
         """View generated documentation."""
-        job = self.background_worker.get_job_status(job_id)
+        safe_job_id = os.path.basename(job_id)
+        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
+            raise HTTPException(status_code=400, detail="Invalid job ID")
+        job = self.background_worker.get_job_status(safe_job_id)
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
 
@@ -183,6 +189,16 @@ class WebRoutes:
         self, job_id: str, filename: str = "overview.md"
     ) -> HTMLResponse:
         """Serve generated documentation files."""
+        safe_job_id = os.path.basename(job_id)
+        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
+            raise HTTPException(status_code=400, detail="Invalid job ID")
+        job_id = safe_job_id
+
+        # Sanitize filename path traversal before path construction
+        clean_filename = os.path.normpath(filename.lstrip("/\\"))
+        if clean_filename.startswith("..") or os.path.isabs(clean_filename):
+            raise HTTPException(status_code=403, detail="Access denied")
+
         job = self.background_worker.get_job_status(job_id)
         docs_path = None
         repo_url = None
