@@ -4,6 +4,7 @@ import tempfile
 import subprocess
 import stat
 import time
+from urllib.parse import urlparse
 
 GIT_EXECUTABLE_PATH = shutil.which("git")
 
@@ -31,20 +32,21 @@ def sanitize_github_url(github_url: str) -> str:
     if url.startswith("www."):
         url = url[4:]
 
-    if url.startswith("github.com/"):
-        url_parts = url.split("/")
-        if len(url_parts) >= 3:
-            owner = url_parts[1]
-            repo = url_parts[2]
+    parsed = urlparse(github_url if "://" in github_url else f"https://{github_url}")
+    hostname = (parsed.hostname or "").lower()
+    is_github_host = hostname == "github.com" or hostname.endswith(".github.com")
+
+    path_parts = [p for p in parsed.path.strip("/").split("/") if p]
+
+    if is_github_host:
+        if len(path_parts) >= 2:
+            owner = path_parts[0]
+            repo = path_parts[1]
         else:
             return github_url
-    elif "/" in url and not url.startswith("github.com"):
-        url_parts = url.split("/")
-        if len(url_parts) >= 2:
-            owner = url_parts[0]
-            repo = url_parts[1]
-        else:
-            return github_url
+    elif len(path_parts) >= 2:
+        owner = path_parts[0]
+        repo = path_parts[1]
     else:
         return github_url
 

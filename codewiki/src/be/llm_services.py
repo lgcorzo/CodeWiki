@@ -10,6 +10,7 @@ Supports multiple providers: openai-compatible, anthropic, bedrock, azure-openai
 import inspect
 import logging
 from typing import Optional
+from urllib.parse import urlparse
 
 from openai.types import chat
 
@@ -73,8 +74,11 @@ def _should_use_max_completion_tokens(model_name: str, base_url: str) -> bool:
     if any(pattern in model_lower for pattern in new_openai_patterns):
         return True
     # If base_url points to OpenAI directly, newer models may need it
-    if base_url and "api.openai.com" in base_url:
-        return True
+    if base_url:
+        parsed = urlparse(base_url if "://" in base_url else f"http://{base_url}")
+        hostname = (parsed.hostname or "").lower()
+        if hostname == "api.openai.com" or hostname.endswith(".api.openai.com"):
+            return True
     return False
 
 

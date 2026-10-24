@@ -56,14 +56,16 @@ def check_writable(path: Path) -> bool:
         return parent.exists() and os.access(parent, os.W_OK)
 
 
-def safe_write(path: Path, content: str, encoding: str = "utf-8"):
+def safe_write(path: Path, content: str, encoding: str = "utf-8", mode: int = 0o600):
     """
-    Safely write content to a file using atomic write (temp file + rename).
+    Safely write content to a file using atomic write (temp file + rename)
+    with restrictive file permissions.
 
     Args:
         path: File path
         content: Content to write
         encoding: File encoding
+        mode: Permission bits for the file (default: 0o600 - user read/write only)
 
     Raises:
         FileSystemError: If write fails
@@ -72,12 +74,27 @@ def safe_write(path: Path, content: str, encoding: str = "utf-8"):
     temp_path = path.with_suffix(path.suffix + ".tmp")
 
     try:
-        # Write to temp file
-        with open(temp_path, "w", encoding=encoding) as f:
-            f.write(content)
+        # Write to temp file using os.open with restrictive mode (0o600)
+        flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
+        fd = os.open(temp_path, flags, mode)
+        try:
+            encoded_data = content.encode(encoding)
+            os.write(fd, encoded_data)
+        finally:
+            os.close(fd)
 
-        # Atomic rename
+        # Ensure permissions on temp file and atomic rename
+        try:
+            os.chmod(temp_path, mode)
+        except Exception:
+            pass
+
         temp_path.replace(path)
+
+        try:
+            os.chmod(path, mode)
+        except Exception:
+            pass
     except Exception as e:
         # Clean up temp file if it exists
         if temp_path.exists():

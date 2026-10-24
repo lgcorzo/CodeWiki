@@ -5,6 +5,7 @@ Git operations manager for CodeWiki CLI.
 from pathlib import Path
 from datetime import datetime
 from typing import Optional, Tuple
+from urllib.parse import urlparse
 import git
 from git.exc import GitCommandError
 
@@ -208,7 +209,18 @@ class GitManager:
             PR URL or None if not a GitHub repo
         """
         remote_url = self.get_remote_url()
-        if not remote_url or "github.com" not in remote_url:
+        if not remote_url:
+            return None
+
+        # Validate domain hostname
+        if remote_url.startswith("git@github.com:"):
+            is_github = True
+        else:
+            parsed = urlparse(remote_url if "://" in remote_url else f"http://{remote_url}")
+            hostname = (parsed.hostname or "").lower()
+            is_github = hostname == "github.com" or hostname.endswith(".github.com")
+
+        if not is_github:
             return None
 
         # Clean URL

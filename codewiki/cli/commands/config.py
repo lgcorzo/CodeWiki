@@ -697,9 +697,23 @@ def config_validate(quick: bool, verbose: bool):
                 click.echo(f"      URL: {config.base_url}")
 
             try:
-                base_url_lower = (config.base_url or "").lower()
+                from urllib.parse import urlparse
+
+                base_url = config.base_url or ""
+                parsed_base = urlparse(base_url if "://" in base_url else f"http://{base_url}")
+                hostname = (parsed_base.hostname or "").lower()
                 provider = getattr(config, "provider", "openai-compatible")
-                if provider == "azure-openai" or ".openai.azure.com" in base_url_lower:
+
+                is_azure = (
+                    provider == "azure-openai"
+                    or hostname.endswith(".openai.azure.com")
+                    or hostname == "openai.azure.com"
+                )
+                is_anthropic = hostname == "api.anthropic.com" or hostname.endswith(
+                    ".api.anthropic.com"
+                )
+
+                if is_azure:
                     # Use Azure OpenAI SDK
                     from openai import AzureOpenAI
 
@@ -709,7 +723,7 @@ def config_validate(quick: bool, verbose: bool):
                         azure_endpoint=config.base_url,
                     )
                     client.models.list()
-                elif "api.anthropic.com" in base_url_lower:
+                elif is_anthropic:
                     # Use Anthropic SDK for native Anthropic endpoints
                     import anthropic
 
