@@ -261,8 +261,7 @@ class WebRoutes:
         # Serve the requested file (pages may sit in nested folders; never
         # outside the docs directory)
         base_dir = os.path.realpath(str(docs_path))
-        clean_rel_filename = filename.lstrip("/\\")
-        target_path = os.path.realpath(os.path.join(base_dir, clean_rel_filename))
+        target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
 
         if not is_safe_path(target_path, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")
