@@ -6,6 +6,7 @@ import json
 import shutil
 from pathlib import Path
 from typing import Optional, Dict, Any
+from urllib.parse import urlparse
 
 from codewiki.cli.utils.errors import FileSystemError
 from codewiki.cli.utils.fs import safe_write, safe_read
@@ -305,7 +306,9 @@ class HTMLGenerator:
                 info["url"] = remote_url
 
                 # Compute GitHub Pages URL
-                if "github.com" in remote_url:
+                parsed = urlparse(remote_url if "://" in remote_url else f"http://{remote_url}")
+                hostname = (parsed.hostname or "").lower()
+                if hostname == "github.com" or hostname.endswith(".github.com"):
                     parts = remote_url.split("/")
                     if len(parts) >= 2:
                         owner = parts[-2]

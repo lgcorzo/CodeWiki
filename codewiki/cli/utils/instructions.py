@@ -4,6 +4,7 @@ Post-generation instructions generator.
 
 from pathlib import Path
 from typing import Optional
+from urllib.parse import urlparse
 import click
 
 
@@ -20,7 +21,9 @@ def compute_github_pages_url(repo_url: str, repo_name: str) -> str:
     """
     # Extract owner from GitHub URL
     # e.g., "https://github.com/owner/repo" -> "owner"
-    if "github.com" in repo_url:
+    parsed = urlparse(repo_url if "://" in repo_url else f"http://{repo_url}")
+    hostname = (parsed.hostname or "").lower()
+    if hostname == "github.com" or hostname.endswith(".github.com"):
         parts = repo_url.rstrip("/").split("/")
         if len(parts) >= 2:
             owner = parts[-2]

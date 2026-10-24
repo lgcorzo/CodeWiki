@@ -244,10 +244,17 @@ class WebRoutes:
 
         # Serve the requested file (pages may sit in nested folders; never
         # outside the docs directory)
-        base_dir = os.path.abspath(str(docs_path))
-        target_file = os.path.abspath(os.path.join(base_dir, filename))
+        base_dir = os.path.realpath(os.path.abspath(str(docs_path)))
+        # Normalize and resolve target file path securely
+        clean_filename = filename.lstrip("/\\")
+        target_file = os.path.realpath(os.path.abspath(os.path.join(base_dir, clean_filename)))
 
-        if os.path.commonpath([target_file, base_dir]) != base_dir or not is_safe_path(
+        try:
+            common = os.path.commonpath([target_file, base_dir])
+        except ValueError:
+            raise HTTPException(status_code=403, detail="Access denied")
+
+        if common != base_dir or not is_safe_path(
             target_file, base_dir
         ):
             raise HTTPException(status_code=403, detail="Access denied")
@@ -300,7 +307,8 @@ class WebRoutes:
 
     def _job_id_to_repo_full_name(self, job_id: str) -> str:
         """Convert job ID back to repo full name."""
-        return job_id.replace("--", "/")
+        safe_job_id = Path(job_id).name.replace("..", "")
+        return safe_job_id.replace("--", "/")
 
     def cleanup_old_jobs(self):
         """Clean up old job status entries."""

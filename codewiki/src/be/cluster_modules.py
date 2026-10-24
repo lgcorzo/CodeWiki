@@ -187,9 +187,8 @@ def _cluster_via_llm(
         if "<GROUPED_COMPONENTS>" not in response or "</GROUPED_COMPONENTS>" not in response:
             logger.warning(
                 "Invalid LLM clustering response for %s: missing <GROUPED_COMPONENTS> "
-                "tags; falling back. Response preview: %s...",
+                "tags; falling back.",
                 module_label,
-                str(response)[:200],
             )
             return {}
 
@@ -204,13 +203,11 @@ def _cluster_via_llm(
 
     except Exception as e:  # noqa: BLE001 — a failed LLM call must not abort clustering
         logger.warning(
-            "Failed to parse LLM clustering response for %s; falling back. "
-            "Error: %s. Response preview: %s...",
+            "Failed to parse LLM clustering response for %s; falling back. Error: %s.",
             module_label,
             e,
-            str(response)[:200],
         )
-        logger.error(f"Traceback: {traceback.format_exc()}")
+        logger.error("Traceback: %s", traceback.format_exc())
         return {}
 
     return module_tree
@@ -465,8 +462,7 @@ def _parse_super_group_response(response: str | None) -> dict[str, Any] | None:
     if "<GROUPED_MODULES>" not in response or "</GROUPED_MODULES>" not in response:
         logger.warning(
             "Invalid super-grouping response: missing <GROUPED_MODULES> tags; "
-            "keeping the flat module tree. Response preview: %s...",
-            str(response)[:200],
+            "keeping the flat module tree."
         )
         return None
     try:
@@ -476,9 +472,8 @@ def _parse_super_group_response(response: str | None) -> dict[str, Any] | None:
     except Exception as e:  # noqa: BLE001 — a failed LLM call must not abort clustering
         logger.warning(
             "Failed to parse super-grouping response; keeping the flat module "
-            "tree. Error: %s. Response preview: %s...",
+            "tree. Error: %s.",
             e,
-            str(response)[:200],
         )
         return None
     if not isinstance(grouping, dict):
