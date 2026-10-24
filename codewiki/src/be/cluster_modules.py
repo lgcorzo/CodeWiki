@@ -1,6 +1,5 @@
 import ast
 import logging
-import traceback
 from collections import defaultdict
 from collections.abc import Callable
 from typing import Any
@@ -207,7 +206,6 @@ def _cluster_via_llm(
             module_label,
             e,
         )
-        logger.error("Traceback: %s", traceback.format_exc())
         return {}
 
     return module_tree

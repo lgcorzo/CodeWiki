@@ -260,20 +260,14 @@ class WebRoutes:
 
         # Serve the requested file (pages may sit in nested folders; never
         # outside the docs directory)
-        base_dir = os.path.realpath(os.path.abspath(str(docs_path)))
-        # Normalize and resolve target file path securely
-        clean_filename = filename.lstrip("/\\")
-        target_file = os.path.realpath(os.path.abspath(os.path.join(base_dir, clean_filename)))
+        base_dir = os.path.realpath(str(docs_path))
+        clean_rel_filename = filename.lstrip("/\\")
+        target_path = os.path.realpath(os.path.join(base_dir, clean_rel_filename))
 
-        try:
-            common = os.path.commonpath([target_file, base_dir])
-        except ValueError:
+        if not is_safe_path(target_path, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")
 
-        if common != base_dir or not is_safe_path(target_file, base_dir):
-            raise HTTPException(status_code=403, detail="Access denied")
-
-        file_path = Path(target_file)
+        file_path = Path(target_path)
         if not file_path.is_file():
             raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
@@ -301,9 +295,7 @@ class WebRoutes:
             return HTMLResponse(content=render_template(DOCS_VIEW_TEMPLATE, context))
 
         except Exception as e:
-            raise HTTPException(
-                status_code=500, detail=f"Error reading {filename}: {e}\n{format_exc()}"
-            )
+            raise HTTPException(status_code=500, detail=f"Error reading {filename}: {e}")
 
     def _normalize_github_url(self, url: str) -> str:
         """Normalize GitHub URL for consistent comparison."""
