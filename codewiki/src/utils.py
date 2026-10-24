@@ -10,9 +10,11 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     Check if target_path resolves within base_dir to prevent path injection / directory traversal.
     """
     try:
-        resolved_base = Path(base_dir).resolve()
-        resolved_target = Path(target_path).resolve()
-        return resolved_target.is_relative_to(resolved_base)
+        base = os.path.realpath(str(base_dir))
+        if not base.endswith(os.sep):
+            base += os.sep
+        target = os.path.realpath(str(target_path))
+        return target.startswith(base) or target == os.path.realpath(str(base_dir))
     except Exception:
         return False
 
