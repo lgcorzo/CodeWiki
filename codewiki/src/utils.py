@@ -10,9 +10,9 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     Check if target_path resolves within base_dir to prevent path injection / directory traversal.
     """
     try:
-        base = Path(os.path.realpath(str(base_dir)))
-        target = Path(os.path.realpath(str(target_path)))
-        return target.is_relative_to(base)
+        base = os.path.realpath(os.path.abspath(str(base_dir)))
+        target = os.path.realpath(os.path.abspath(str(target_path)))
+        return os.path.commonpath([base, target]) == base
     except Exception:
         return False
 
@@ -56,33 +56,38 @@ class FileManager:
     @staticmethod
     def ensure_directory(path: str) -> None:
         """Create directory if it doesn't exist."""
-        os.makedirs(path, exist_ok=True)
+        resolved_path = os.path.realpath(os.path.abspath(str(path)))
+        os.makedirs(resolved_path, exist_ok=True)
 
     @staticmethod
     def save_json(data: Any, filepath: str) -> None:
         """Save data as JSON to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        resolved_path = os.path.realpath(os.path.abspath(str(filepath)))
+        with open(resolved_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load_json(filepath: str) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        if not os.path.exists(filepath):
+        resolved_path = os.path.realpath(os.path.abspath(str(filepath)))
+        if not os.path.exists(resolved_path):
             return None
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(resolved_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
     def save_text(content: str, filepath: str) -> None:
         """Save text content to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        resolved_path = os.path.realpath(os.path.abspath(str(filepath)))
+        with open(resolved_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     @staticmethod
     def load_text(filepath: str) -> str:
         """Load text content from file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        resolved_path = os.path.realpath(os.path.abspath(str(filepath)))
+        with open(resolved_path, "r", encoding="utf-8") as f:
             return f.read()
 
 
