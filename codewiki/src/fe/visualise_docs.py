@@ -162,14 +162,14 @@ async def serve_doc(filename: str):
             detail="Documentation folder not configured. Please set DOCS_FOLDER environment variable or run with --docs-folder argument.",
         )
 
-    # Security check: ensure we're only serving .md files and they exist in the docs folder
-    if not filename.endswith(".md"):
-        raise HTTPException(status_code=404, detail="Only markdown files are supported")
+    # Security check: ensure we're only serving .md files and prevent path traversal
+    clean_filename = os.path.normpath(filename.lstrip("/\\"))
+    if clean_filename.startswith("..") or os.path.isabs(clean_filename) or not clean_filename.endswith(".md"):
+        raise HTTPException(status_code=403 if clean_filename.startswith("..") or os.path.isabs(clean_filename) else 404, detail="Access denied" if clean_filename.startswith("..") or os.path.isabs(clean_filename) else "Only markdown files are supported")
 
     # Ensure the file is within the docs folder (prevent directory traversal)
     base_dir = os.path.realpath(str(DOCS_FOLDER))
-    clean_rel_filename = filename.lstrip("/\\")
-    target_path = os.path.realpath(os.path.join(base_dir, clean_rel_filename))
+    target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
 
     if not is_safe_path(target_path, base_dir):
         raise HTTPException(status_code=403, detail="Access denied")
