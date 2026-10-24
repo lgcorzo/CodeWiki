@@ -74,19 +74,14 @@ def safe_write(path: Path, content: str, encoding: str = "utf-8", mode: int = 0o
     temp_path = path.with_suffix(path.suffix + ".tmp")
 
     try:
-        # Write to temp file using os.open for explicit restrictive permissions (0o600)
+        # Write to temp file using os.open with restrictive mode (0o600)
         flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC
         fd = os.open(temp_path, flags, mode)
         try:
-            with open(fd, "w", encoding=encoding, closefd=True) as f:
-                f.write(content)
-        except Exception:
-            # If open(fd...) raised before wrapping, close fd manually
-            try:
-                os.close(fd)
-            except OSError:
-                pass
-            raise
+            encoded_data = content.encode(encoding)
+            os.write(fd, encoded_data)
+        finally:
+            os.close(fd)
 
         # Ensure permissions on temp file and atomic rename
         try:
