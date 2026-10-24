@@ -11,10 +11,8 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     """
     try:
         base = os.path.realpath(str(base_dir))
-        if not base.endswith(os.sep):
-            base += os.sep
         target = os.path.realpath(str(target_path))
-        return target.startswith(base) or target == os.path.realpath(str(base_dir))
+        return os.path.commonpath([base, target]) == base
     except Exception:
         return False
 
