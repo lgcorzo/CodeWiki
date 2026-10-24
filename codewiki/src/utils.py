@@ -10,8 +10,11 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     Check if target_path resolves within base_dir to prevent path injection / directory traversal.
     """
     try:
+        target_str = str(target_path)
+        if ".." in target_str:
+            return False
         base = Path(os.path.realpath(str(base_dir)))
-        target = Path(os.path.realpath(str(target_path)))
+        target = Path(os.path.realpath(target_str))
         return target.is_relative_to(base)
     except Exception:
         return False
@@ -54,35 +57,47 @@ class FileManager:
     """Handles file I/O operations."""
 
     @staticmethod
-    def ensure_directory(path: str) -> None:
-        """Create directory if it doesn't exist."""
-        os.makedirs(path, exist_ok=True)
+    def _get_safe_path(filepath: Union[str, Path]) -> Path:
+        path_str = str(filepath)
+        if ".." in path_str:
+            raise ValueError(f"Invalid path traversal in {filepath}")
+        return Path(os.path.realpath(path_str))
 
     @staticmethod
-    def save_json(data: Any, filepath: str) -> None:
+    def ensure_directory(path: Union[str, Path]) -> None:
+        """Create directory if it doesn't exist."""
+        safe_path = FileManager._get_safe_path(path)
+        os.makedirs(safe_path, exist_ok=True)
+
+    @staticmethod
+    def save_json(data: Any, filepath: Union[str, Path]) -> None:
         """Save data as JSON to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def load_json(filepath: str) -> Optional[Dict[str, Any]]:
+    def load_json(filepath: Union[str, Path]) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        if not os.path.exists(filepath):
+        safe_path = FileManager._get_safe_path(filepath)
+        if not safe_path.exists():
             return None
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(safe_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
-    def save_text(content: str, filepath: str) -> None:
+    def save_text(content: str, filepath: Union[str, Path]) -> None:
         """Save text content to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     @staticmethod
-    def load_text(filepath: str) -> str:
+    def load_text(filepath: Union[str, Path]) -> str:
         """Load text content from file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        safe_path = FileManager._get_safe_path(filepath)
+        with open(safe_path, "r", encoding="utf-8") as f:
             return f.read()
 
 

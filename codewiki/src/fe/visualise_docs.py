@@ -179,8 +179,8 @@ async def serve_doc(filename: str):
         )
 
     # Ensure the file is within the docs folder (prevent directory traversal)
-    base_dir = os.path.realpath(str(DOCS_FOLDER))
-    target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
+    base_dir = os.path.realpath(os.path.abspath(str(DOCS_FOLDER)))
+    target_path = os.path.realpath(os.path.abspath(os.path.join(base_dir, clean_filename)))
 
     if not is_safe_path(target_path, base_dir):
         raise HTTPException(status_code=403, detail="Access denied")
