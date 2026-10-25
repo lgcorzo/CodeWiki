@@ -288,14 +288,14 @@ class WebRoutes:
             raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
         try:
-            content = file_manager.load_text(file_path)
+            content = file_manager.load_text(file_path, base_dir=base_dir)
 
             # Convert markdown to HTML (reuse from visualise_docs.py)
             from .visualise_docs import markdown_to_html, get_file_title
             from .templates import DOCS_VIEW_TEMPLATE
 
             html_content = markdown_to_html(content)
-            title = get_file_title(file_path)
+            title = get_file_title(file_path, base_dir=base_dir)
 
             context = {
                 "repo_name": repo_url.split("/")[-1],

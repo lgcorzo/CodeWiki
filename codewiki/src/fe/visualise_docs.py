@@ -15,7 +15,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Dict, Optional, Union
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
@@ -99,10 +99,10 @@ def markdown_to_html(content: str) -> str:
     return html
 
 
-def get_file_title(file_path: Path) -> str:
+def get_file_title(file_path: Path, base_dir: Optional[Union[str, Path]] = None) -> str:
     """Extract title from markdown file, fallback to filename."""
     try:
-        content = file_manager.load_text(file_path)
+        content = file_manager.load_text(file_path, base_dir=base_dir)
         first_line = content.split("\n")[0].strip()
         if first_line.startswith("# "):
             return first_line[2:].strip()
@@ -132,10 +132,11 @@ async def index():
         )
 
     try:
-        content = file_manager.load_text(overview_file)
+        base_dir = os.path.realpath(str(DOCS_FOLDER))
+        content = file_manager.load_text(overview_file, base_dir=base_dir)
 
         html_content = markdown_to_html(content)
-        title = get_file_title(overview_file)
+        title = get_file_title(overview_file, base_dir=base_dir)
 
         context = {
             "title": title,
@@ -199,10 +200,10 @@ async def serve_doc(filename: str):
         raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
     try:
-        content = file_manager.load_text(file_path)
+        content = file_manager.load_text(file_path, base_dir=base_dir)
 
         html_content = markdown_to_html(content)
-        title = get_file_title(file_path)
+        title = get_file_title(file_path, base_dir=base_dir)
 
         context = {
             "title": title,

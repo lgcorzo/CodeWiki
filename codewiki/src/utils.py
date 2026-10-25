@@ -91,12 +91,17 @@ class FileManager:
             f.write(content)
 
     @staticmethod
-    def load_text(filepath: Union[str, Path]) -> str:
+    def load_text(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> str:
         """Load text content from file."""
-        path_str = os.path.abspath(str(filepath))
-        if ".." in path_str:
-            raise ValueError("Path traversal attempt detected")
-        with open(path_str, "r", encoding="utf-8") as f:
+        target_path = os.path.abspath(os.path.realpath(str(filepath)))
+        if base_dir:
+            base_path = os.path.abspath(os.path.realpath(str(base_dir)))
+            if os.path.commonpath([base_path, target_path]) != base_path:
+                raise ValueError("Access denied: path traversal attempt detected")
+        elif ".." in str(filepath):
+            raise ValueError("Access denied: path traversal attempt detected")
+
+        with open(target_path, "r", encoding="utf-8") as f:
             return f.read()
 
 
