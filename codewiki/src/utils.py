@@ -12,12 +12,9 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     if not target_path or not base_dir:
         return False
     try:
-        str_target = str(target_path)
-        if ".." in str_target:
-            return False
-        base = Path(os.path.realpath(str(base_dir))).resolve()
-        target = Path(os.path.realpath(str_target)).resolve()
-        return target.is_relative_to(base)
+        base = os.path.abspath(os.path.realpath(str(base_dir)))
+        target = os.path.abspath(os.path.realpath(str(target_path)))
+        return os.path.commonpath([base, target]) == base
     except Exception:
         return False
 
@@ -66,7 +63,7 @@ class FileManager:
     @staticmethod
     def save_json(data: Any, filepath: Union[str, Path]) -> None:
         """Save data as JSON to file."""
-        path_str = str(filepath)
+        path_str = os.path.abspath(str(filepath))
         if ".." in path_str:
             raise ValueError("Path traversal attempt detected")
         with open(path_str, "w", encoding="utf-8") as f:
@@ -75,7 +72,7 @@ class FileManager:
     @staticmethod
     def load_json(filepath: Union[str, Path]) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        path_str = str(filepath)
+        path_str = os.path.abspath(str(filepath))
         if ".." in path_str:
             raise ValueError("Path traversal attempt detected")
         if not os.path.exists(path_str):
@@ -87,7 +84,7 @@ class FileManager:
     @staticmethod
     def save_text(content: str, filepath: Union[str, Path]) -> None:
         """Save text content to file."""
-        path_str = str(filepath)
+        path_str = os.path.abspath(str(filepath))
         if ".." in path_str:
             raise ValueError("Path traversal attempt detected")
         with open(path_str, "w", encoding="utf-8") as f:
@@ -96,7 +93,7 @@ class FileManager:
     @staticmethod
     def load_text(filepath: Union[str, Path]) -> str:
         """Load text content from file."""
-        path_str = str(filepath)
+        path_str = os.path.abspath(str(filepath))
         if ".." in path_str:
             raise ValueError("Path traversal attempt detected")
         with open(path_str, "r", encoding="utf-8") as f:
