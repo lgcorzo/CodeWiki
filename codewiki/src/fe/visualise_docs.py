@@ -175,10 +175,14 @@ async def serve_doc(filename: str):
     ):
         raise HTTPException(
             status_code=403
-            if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename)
+            if clean_filename.startswith("..")
+            or ".." in clean_filename
+            or os.path.isabs(clean_filename)
             else 404,
             detail="Access denied"
-            if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename)
+            if clean_filename.startswith("..")
+            or ".." in clean_filename
+            or os.path.isabs(clean_filename)
             else "Only markdown files are supported",
         )
 

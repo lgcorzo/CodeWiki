@@ -200,11 +200,20 @@ class WebRoutes:
         job_id = safe_job_id
 
         # Sanitize filename path traversal before path construction
-        if not filename or ".." in filename or filename.startswith("/") or filename.startswith("\\"):
+        if (
+            not filename
+            or ".." in filename
+            or filename.startswith("/")
+            or filename.startswith("\\")
+        ):
             raise HTTPException(status_code=403, detail="Access denied")
 
         clean_filename = os.path.normpath(filename.lstrip("/\\"))
-        if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename):
+        if (
+            clean_filename.startswith("..")
+            or ".." in clean_filename
+            or os.path.isabs(clean_filename)
+        ):
             raise HTTPException(status_code=403, detail="Access denied")
 
         job = self.background_worker.get_job_status(job_id)
