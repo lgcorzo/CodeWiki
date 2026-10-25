@@ -163,18 +163,22 @@ async def serve_doc(filename: str):
         )
 
     # Security check: ensure we're only serving .md files and prevent path traversal
+    if not filename or ".." in filename or filename.startswith("/") or filename.startswith("\\"):
+        raise HTTPException(status_code=403, detail="Access denied")
+
     clean_filename = os.path.normpath(filename.lstrip("/\\"))
     if (
         clean_filename.startswith("..")
+        or ".." in clean_filename
         or os.path.isabs(clean_filename)
         or not clean_filename.endswith(".md")
     ):
         raise HTTPException(
             status_code=403
-            if clean_filename.startswith("..") or os.path.isabs(clean_filename)
+            if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename)
             else 404,
             detail="Access denied"
-            if clean_filename.startswith("..") or os.path.isabs(clean_filename)
+            if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename)
             else "Only markdown files are supported",
         )
 

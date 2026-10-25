@@ -9,9 +9,11 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     """
     Check if target_path resolves within base_dir to prevent path injection / directory traversal.
     """
+    if not target_path or not base_dir:
+        return False
     try:
-        base = Path(os.path.realpath(str(base_dir)))
-        target = Path(os.path.realpath(str(target_path)))
+        base = Path(os.path.realpath(str(base_dir))).resolve()
+        target = Path(os.path.realpath(str(target_path))).resolve()
         return target.is_relative_to(base)
     except Exception:
         return False
@@ -54,35 +56,36 @@ class FileManager:
     """Handles file I/O operations."""
 
     @staticmethod
-    def ensure_directory(path: str) -> None:
+    def ensure_directory(path: Union[str, Path]) -> None:
         """Create directory if it doesn't exist."""
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(str(path), exist_ok=True)
 
     @staticmethod
-    def save_json(data: Any, filepath: str) -> None:
+    def save_json(data: Any, filepath: Union[str, Path]) -> None:
         """Save data as JSON to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        with open(str(filepath), "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def load_json(filepath: str) -> Optional[Dict[str, Any]]:
+    def load_json(filepath: Union[str, Path]) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        if not os.path.exists(filepath):
+        path_str = str(filepath)
+        if not os.path.exists(path_str):
             return None
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(path_str, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
-    def save_text(content: str, filepath: str) -> None:
+    def save_text(content: str, filepath: Union[str, Path]) -> None:
         """Save text content to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        with open(str(filepath), "w", encoding="utf-8") as f:
             f.write(content)
 
     @staticmethod
-    def load_text(filepath: str) -> str:
+    def load_text(filepath: Union[str, Path]) -> str:
         """Load text content from file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(str(filepath), "r", encoding="utf-8") as f:
             return f.read()
 
 

@@ -280,7 +280,7 @@ def cluster_modules(
     _, potential_core_components_with_code = format_potential_core_components(
         leaf_nodes, components
     )
-    input_tokens = count_tokens(potential_core_components_with_code)
+    input_size = count_tokens(potential_core_components_with_code)
     threshold = config.max_token_per_module
     module_label = current_module_name or "repository"
 
@@ -288,16 +288,16 @@ def cluster_modules(
         "Module clustering input for %s: %d leaf nodes, %d tokens, threshold %d",
         module_label,
         len(leaf_nodes),
-        input_tokens,
+        input_size,
         threshold,
     )
 
-    if input_tokens <= threshold:
+    if input_size <= threshold:
         logger.info(
             "Skipping LLM module clustering for %s because %d tokens fit within the "
             "%d-token threshold; using whole-module documentation mode.",
             module_label,
-            input_tokens,
+            input_size,
             threshold,
         )
         if current_module_name is None:
@@ -321,7 +321,7 @@ def cluster_modules(
     logger.info(
         "Requesting LLM module clustering for %s because %d tokens exceed the %d-token threshold.",
         module_label,
-        input_tokens,
+        input_size,
         threshold,
     )
 

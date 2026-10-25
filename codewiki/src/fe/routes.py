@@ -150,11 +150,20 @@ class WebRoutes:
 
         return HTMLResponse(content=render_template(WEB_INTERFACE_TEMPLATE, context))
 
+    def _validate_job_id(self, job_id: str) -> str:
+        """Validate job ID to ensure it contains only safe alphanumeric/hyphen characters."""
+        if not job_id or not isinstance(job_id, str):
+            raise HTTPException(status_code=400, detail="Invalid job ID")
+        job_id = job_id.strip()
+        import re
+
+        if not re.match(r"^[a-zA-Z0-9_\-]+$", job_id):
+            raise HTTPException(status_code=400, detail="Invalid job ID")
+        return job_id
+
     async def get_job_status(self, job_id: str) -> JobStatusResponse:
         """API endpoint to get job status."""
-        safe_job_id = os.path.basename(job_id)
-        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
-            raise HTTPException(status_code=400, detail="Invalid job ID")
+        safe_job_id = self._validate_job_id(job_id)
         job = self.background_worker.get_job_status(safe_job_id)
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
@@ -163,9 +172,7 @@ class WebRoutes:
 
     async def view_docs(self, job_id: str) -> RedirectResponse:
         """View generated documentation."""
-        safe_job_id = os.path.basename(job_id)
-        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
-            raise HTTPException(status_code=400, detail="Invalid job ID")
+        safe_job_id = self._validate_job_id(job_id)
         job = self.background_worker.get_job_status(safe_job_id)
         if not job:
             raise HTTPException(status_code=404, detail="Job not found")
@@ -189,14 +196,15 @@ class WebRoutes:
         self, job_id: str, filename: str = "overview.md"
     ) -> HTMLResponse:
         """Serve generated documentation files."""
-        safe_job_id = os.path.basename(job_id)
-        if not safe_job_id or ".." in job_id or "/" in job_id or "\\" in job_id:
-            raise HTTPException(status_code=400, detail="Invalid job ID")
+        safe_job_id = self._validate_job_id(job_id)
         job_id = safe_job_id
 
         # Sanitize filename path traversal before path construction
+        if not filename or ".." in filename or filename.startswith("/") or filename.startswith("\\"):
+            raise HTTPException(status_code=403, detail="Access denied")
+
         clean_filename = os.path.normpath(filename.lstrip("/\\"))
-        if clean_filename.startswith("..") or os.path.isabs(clean_filename):
+        if clean_filename.startswith("..") or ".." in clean_filename or os.path.isabs(clean_filename):
             raise HTTPException(status_code=403, detail="Access denied")
 
         job = self.background_worker.get_job_status(job_id)
@@ -312,7 +320,7 @@ class WebRoutes:
 
     def _job_id_to_repo_full_name(self, job_id: str) -> str:
         """Convert job ID back to repo full name."""
-        safe_job_id = Path(job_id).name.replace("..", "")
+        safe_job_id = self._validate_job_id(job_id)
         return safe_job_id.replace("--", "/")
 
     def cleanup_old_jobs(self):
