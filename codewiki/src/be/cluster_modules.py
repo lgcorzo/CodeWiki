@@ -28,6 +28,7 @@ def mask_secret(val: str) -> str:
         return val[:3] + "***" + val[-3:]
     return "***"
 
+
 # When whole-repo mode is chosen but leaf entry points touch fewer than this
 # fraction of parsed files, warn that coverage depends on agent exploration.
 LOW_COVERAGE_RATIO = 0.5
@@ -174,8 +175,10 @@ def _cluster_via_llm(
     Returns {} for any empty, malformed, or non-dict response instead of
     raising, so callers can fall back gracefully.
     """
-    if getattr(config, "llm_api_key", None):
-        logger.debug("Clustering via LLM using API key: %s", mask_secret(config.llm_api_key))
+    auth_token = getattr(config, "auth_token", None) or getattr(config, "llm_api_key", None)
+    if auth_token:
+        masked_token = mask_secret(str(auth_token))
+        logger.info("Clustering request authenticated with token: %s", masked_token)
 
     potential_core_components, _ = format_potential_core_components(leaf_nodes, components)
     prompt = format_cluster_prompt(
