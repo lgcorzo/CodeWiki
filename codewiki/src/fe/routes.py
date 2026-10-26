@@ -240,10 +240,15 @@ class WebRoutes:
         if not docs_path or not docs_path.exists():
             raise HTTPException(status_code=404, detail="Documentation files not found")
 
+        # Serve the requested file (pages may sit in nested folders; never
+        # outside the docs directory)
+        base_dir = os.path.realpath(str(docs_path))
+        target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
+
         # Load module tree
         module_tree = None
-        module_tree_file = docs_path / "module_tree.json"
-        if module_tree_file.exists():
+        module_tree_file = os.path.realpath(os.path.join(base_dir, "module_tree.json"))
+        if is_safe_path(module_tree_file, base_dir) and Path(module_tree_file).exists():
             try:
                 module_tree = file_manager.load_json(module_tree_file)
             except Exception:
@@ -251,17 +256,12 @@ class WebRoutes:
 
         # Load metadata
         metadata = None
-        metadata_file = docs_path / "metadata.json"
-        if metadata_file.exists():
+        metadata_file = os.path.realpath(os.path.join(base_dir, "metadata.json"))
+        if is_safe_path(metadata_file, base_dir) and Path(metadata_file).exists():
             try:
                 metadata = file_manager.load_json(metadata_file)
             except Exception:
                 pass
-
-        # Serve the requested file (pages may sit in nested folders; never
-        # outside the docs directory)
-        base_dir = os.path.realpath(str(docs_path))
-        target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
 
         if not is_safe_path(target_path, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")

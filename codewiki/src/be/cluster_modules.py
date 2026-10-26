@@ -19,6 +19,15 @@ logger = logging.getLogger(__name__)
 
 Completer = Callable[[str], str | None]
 
+
+def mask_secret(val: str) -> str:
+    """Mask sensitive string variables before logging."""
+    if not val:
+        return ""
+    if len(val) > 6:
+        return val[:3] + "***" + val[-3:]
+    return "***"
+
 # When whole-repo mode is chosen but leaf entry points touch fewer than this
 # fraction of parsed files, warn that coverage depends on agent exploration.
 LOW_COVERAGE_RATIO = 0.5
@@ -165,6 +174,9 @@ def _cluster_via_llm(
     Returns {} for any empty, malformed, or non-dict response instead of
     raising, so callers can fall back gracefully.
     """
+    if getattr(config, "llm_api_key", None):
+        logger.debug("Clustering via LLM using API key: %s", mask_secret(config.llm_api_key))
+
     potential_core_components, _ = format_potential_core_components(leaf_nodes, components)
     prompt = format_cluster_prompt(
         potential_core_components, current_module_tree, current_module_name
