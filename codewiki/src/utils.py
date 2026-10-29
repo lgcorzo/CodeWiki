@@ -97,22 +97,20 @@ class FileManager:
         if not path_obj.exists():
             return None
 
-        with open(path_obj, "r", encoding="utf-8") as f:
-            return json.load(f)
+        content = path_obj.read_text(encoding="utf-8")
+        return json.loads(content)
 
     @staticmethod
     def save_text(content: str, filepath: str, base_dir: Optional[Union[str, Path]] = None) -> None:
         """Save text content to file."""
         path_obj = FileManager._validate_path(filepath, base_dir)
-        with open(path_obj, "w", encoding="utf-8") as f:
-            f.write(content)
+        path_obj.write_text(content, encoding="utf-8")
 
     @staticmethod
     def load_text(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> str:
         """Load text content from file."""
         path_obj = FileManager._validate_path(filepath, base_dir)
-        with open(path_obj, "r", encoding="utf-8") as f:
-            return f.read()
+        return path_obj.read_text(encoding="utf-8")
 
 
 file_manager = FileManager()
