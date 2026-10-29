@@ -124,7 +124,7 @@ fastmcp-slim==3.4.11
     #   pydantic-ai-slim
 fastuuid==0.14.0
     # via litellm
-filelock==3.32.7
+filelock==4.2.1
     # via
     #   codewiki (pyproject.toml)
     #   huggingface-hub
