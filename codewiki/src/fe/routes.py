@@ -244,41 +244,47 @@ class WebRoutes:
         # outside the docs directory)
         base_dir = os.path.realpath(str(docs_path))
         target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
+        prefix = base_dir if base_dir.endswith(os.sep) else base_dir + os.sep
 
-        if not is_safe_path(target_path, base_dir):
+        if not target_path.startswith(prefix) or not is_safe_path(target_path, base_dir):
             raise HTTPException(status_code=403, detail="Access denied")
 
         # Load module tree
         module_tree = None
         module_tree_file = os.path.realpath(os.path.join(base_dir, "module_tree.json"))
-        if is_safe_path(module_tree_file, base_dir) and Path(module_tree_file).exists():
+        if module_tree_file.startswith(prefix) and os.path.exists(module_tree_file):
             try:
-                module_tree = file_manager.load_json(module_tree_file)
+                module_tree = file_manager.load_json(module_tree_file, base_dir=base_dir)
             except Exception:
                 pass
 
         # Load metadata
         metadata = None
         metadata_file = os.path.realpath(os.path.join(base_dir, "metadata.json"))
-        if is_safe_path(metadata_file, base_dir) and Path(metadata_file).exists():
+        if metadata_file.startswith(prefix) and os.path.exists(metadata_file):
             try:
-                metadata = file_manager.load_json(metadata_file)
+                metadata = file_manager.load_json(metadata_file, base_dir=base_dir)
             except Exception:
                 pass
 
         file_path = Path(target_path)
-        if not file_path.is_file():
+        if not os.path.isfile(target_path):
             raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
         try:
-            content = file_manager.load_text(file_path)
+            content = file_manager.load_text(target_path, base_dir=base_dir)
 
             # Convert markdown to HTML (reuse from visualise_docs.py)
-            from .visualise_docs import markdown_to_html, get_file_title
+            from .visualise_docs import markdown_to_html
             from .templates import DOCS_VIEW_TEMPLATE
 
             html_content = markdown_to_html(content)
-            title = get_file_title(file_path)
+            first_line = content.split("\n")[0].strip()
+            title = (
+                first_line[2:].strip()
+                if first_line.startswith("# ")
+                else file_path.stem.replace("_", " ").title()
+            )
 
             context = {
                 "repo_name": repo_url.split("/")[-1],

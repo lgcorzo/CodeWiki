@@ -99,10 +99,10 @@ def markdown_to_html(content: str) -> str:
     return html
 
 
-def get_file_title(file_path: Path) -> str:
+def get_file_title(file_path: Path, base_dir: Optional[str] = None) -> str:
     """Extract title from markdown file, fallback to filename."""
     try:
-        content = file_manager.load_text(file_path)
+        content = file_manager.load_text(str(file_path), base_dir=base_dir)
         first_line = content.split("\n")[0].strip()
         if first_line.startswith("# "):
             return first_line[2:].strip()
@@ -185,20 +185,25 @@ async def serve_doc(filename: str):
     # Ensure the file is within the docs folder (prevent directory traversal)
     base_dir = os.path.realpath(str(DOCS_FOLDER))
     target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
+    prefix = base_dir if base_dir.endswith(os.sep) else base_dir + os.sep
 
-    if not is_safe_path(target_path, base_dir):
+    if not target_path.startswith(prefix) or not is_safe_path(target_path, base_dir):
         raise HTTPException(status_code=403, detail="Access denied")
 
     file_path = Path(target_path)
 
-    if not file_path.exists():
+    if not os.path.exists(target_path):
         raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
     try:
-        content = file_manager.load_text(file_path)
+        content = file_manager.load_text(target_path, base_dir=base_dir)
 
         html_content = markdown_to_html(content)
-        title = get_file_title(file_path)
+        title = (
+            content.split("\n")[0].strip()[2:].strip()
+            if content.split("\n")[0].strip().startswith("# ")
+            else file_path.stem.replace("_", " ").title()
+        )
 
         context = {
             "title": title,
