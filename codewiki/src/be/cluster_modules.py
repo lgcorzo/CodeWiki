@@ -291,8 +291,7 @@ def cluster_modules(
     module_label = current_module_name or "repository"
 
     logger.info(
-        "Module clustering input for %s: %d leaf nodes, %d tokens, threshold %d",
-        mask_secret(module_label),
+        "Module clustering input: %d leaf nodes, %d tokens, threshold %d",
         len(leaf_nodes),
         input_tokens,
         threshold,
