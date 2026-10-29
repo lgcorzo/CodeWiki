@@ -299,9 +299,8 @@ def cluster_modules(
 
     if input_tokens <= threshold:
         logger.info(
-            "Skipping LLM module clustering for %s because %d tokens fit within the "
+            "Skipping LLM module clustering because %d tokens fit within the "
             "%d-token threshold; using whole-module documentation mode.",
-            mask_secret(module_label),
             input_tokens,
             threshold,
         )
