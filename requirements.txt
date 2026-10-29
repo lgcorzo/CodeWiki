@@ -124,11 +124,10 @@ fastmcp-slim==3.4.11
     #   pydantic-ai-slim
 fastuuid==0.14.0
     # via litellm
-filelock==3.32.7
+filelock==4.2.1
     # via
     #   codewiki (pyproject.toml)
     #   huggingface-hub
-    #   litellm
 frozenlist==1.8.0
     # via
     #   aiohttp
@@ -197,7 +196,6 @@ httpx2==2.16.0
     #   mistralai
 huggingface-hub==1.16.1
     # via
-    #   litellm
     #   pydantic-ai-slim
     #   tokenizers
 hyperframe==6.1.0
@@ -254,7 +252,7 @@ keyring==25.7.0
     # via
     #   codewiki (pyproject.toml)
     #   py-key-value-aio
-litellm==1.106.4
+litellm==1.103.10
     # via codewiki (pyproject.toml)
 logfire==5.3.0
     # via
@@ -358,7 +356,6 @@ packaging==25.0
     # via
     #   fastmcp-slim
     #   huggingface-hub
-    #   litellm
     #   opentelemetry-instrumentation
     #   xai-sdk
 pathable==0.6.0
@@ -474,7 +471,6 @@ pyyaml==6.0.3
     #   fastmcp-slim
     #   huggingface-hub
     #   jsonschema-path
-    #   litellm
     #   pydantic-ai-slim
     #   pydantic-evals
 referencing==0.37.0
@@ -614,7 +610,6 @@ typing-extensions==4.16.0
     #   grpcio
     #   httpx2
     #   huggingface-hub
-    #   litellm
     #   logfire-sdk
     #   mcp
     #   nexus-rpc
