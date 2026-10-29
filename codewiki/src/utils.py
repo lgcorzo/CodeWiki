@@ -56,35 +56,49 @@ class FileManager:
     """Handles file I/O operations."""
 
     @staticmethod
-    def ensure_directory(path: str) -> None:
-        """Create directory if it doesn't exist."""
-        os.makedirs(path, exist_ok=True)
+    def _validate_path(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> Path:
+        """Sanitize and validate file path against path traversal if base_dir is specified."""
+        path_obj = Path(filepath).resolve()
+        if base_dir is not None:
+            if not is_safe_path(path_obj, base_dir):
+                raise ValueError(f"Unsafe path detected: {filepath}")
+        return path_obj
 
     @staticmethod
-    def save_json(data: Any, filepath: str) -> None:
+    def ensure_directory(path: str, base_dir: Optional[Union[str, Path]] = None) -> None:
+        """Create directory if it doesn't exist."""
+        path_obj = FileManager._validate_path(path, base_dir)
+        os.makedirs(path_obj, exist_ok=True)
+
+    @staticmethod
+    def save_json(data: Any, filepath: str, base_dir: Optional[Union[str, Path]] = None) -> None:
         """Save data as JSON to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        path_obj = FileManager._validate_path(filepath, base_dir)
+        with open(path_obj, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def load_json(filepath: str) -> Optional[Dict[str, Any]]:
+    def load_json(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
-        if not os.path.exists(filepath):
+        path_obj = FileManager._validate_path(filepath, base_dir)
+        if not path_obj.exists():
             return None
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(path_obj, "r", encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod
-    def save_text(content: str, filepath: str) -> None:
+    def save_text(content: str, filepath: str, base_dir: Optional[Union[str, Path]] = None) -> None:
         """Save text content to file."""
-        with open(filepath, "w", encoding="utf-8") as f:
+        path_obj = FileManager._validate_path(filepath, base_dir)
+        with open(path_obj, "w", encoding="utf-8") as f:
             f.write(content)
 
     @staticmethod
-    def load_text(filepath: str) -> str:
+    def load_text(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> str:
         """Load text content from file."""
-        with open(filepath, "r", encoding="utf-8") as f:
+        path_obj = FileManager._validate_path(filepath, base_dir)
+        with open(path_obj, "r", encoding="utf-8") as f:
             return f.read()
 
 

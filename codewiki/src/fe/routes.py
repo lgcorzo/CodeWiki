@@ -245,6 +245,9 @@ class WebRoutes:
         base_dir = os.path.realpath(str(docs_path))
         target_path = os.path.realpath(os.path.join(base_dir, clean_filename))
 
+        if not is_safe_path(target_path, base_dir):
+            raise HTTPException(status_code=403, detail="Access denied")
+
         # Load module tree
         module_tree = None
         module_tree_file = os.path.realpath(os.path.join(base_dir, "module_tree.json"))
@@ -262,9 +265,6 @@ class WebRoutes:
                 metadata = file_manager.load_json(metadata_file)
             except Exception:
                 pass
-
-        if not is_safe_path(target_path, base_dir):
-            raise HTTPException(status_code=403, detail="Access denied")
 
         file_path = Path(target_path)
         if not file_path.is_file():
