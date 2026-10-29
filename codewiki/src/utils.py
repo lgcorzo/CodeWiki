@@ -12,9 +12,8 @@ def is_safe_path(target_path: Union[str, Path], base_dir: Union[str, Path]) -> b
     try:
         base = os.path.abspath(os.path.realpath(str(base_dir)))
         target = os.path.abspath(os.path.realpath(str(target_path)))
-        if os.path.commonpath([base, target]) != base:
-            return False
-        return Path(target).is_relative_to(Path(base))
+        prefix = base if base.endswith(os.sep) else base + os.sep
+        return target.startswith(prefix) or target == base
     except Exception:
         return False
 
@@ -59,12 +58,22 @@ class FileManager:
     def _validate_path(
         filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None
     ) -> Path:
-        """Sanitize and validate file path against path traversal if base_dir is specified."""
-        path_obj = Path(filepath).resolve()
+        """Sanitize and validate file path against path traversal."""
+        target_str = str(filepath)
+        abs_target = os.path.abspath(os.path.realpath(target_str))
+
         if base_dir is not None:
-            if not is_safe_path(path_obj, base_dir):
-                raise ValueError(f"Unsafe path detected: {filepath}")
-        return path_obj
+            abs_base = os.path.abspath(os.path.realpath(str(base_dir)))
+        elif not os.path.isabs(target_str):
+            abs_base = os.path.abspath(os.getcwd())
+        else:
+            abs_base = os.path.dirname(abs_target)
+
+        prefix = abs_base if abs_base.endswith(os.sep) else abs_base + os.sep
+        if not (abs_target.startswith(prefix) or abs_target == abs_base):
+            raise ValueError(f"Unsafe path detected: {filepath}")
+
+        return Path(abs_target)
 
     @staticmethod
     def ensure_directory(path: str, base_dir: Optional[Union[str, Path]] = None) -> None:
