@@ -29,11 +29,6 @@ def redact_text(val: str) -> str:
     return "***"
 
 
-def mask_secret(val: str) -> str:
-    """Mask sensitive string variables before logging."""
-    return redact_text(val)
-
-
 # When whole-repo mode is chosen but leaf entry points touch fewer than this
 # fraction of parsed files, warn that coverage depends on agent exploration.
 LOW_COVERAGE_RATIO = 0.5

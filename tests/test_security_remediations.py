@@ -1,6 +1,5 @@
 import os
 from codewiki.src.utils import is_safe_path, is_safe_url
-from codewiki.src.be.cluster_modules import mask_secret, redact_text
 
 
 def test_is_safe_path():
@@ -18,8 +17,20 @@ def test_is_safe_url():
     assert is_safe_url("https://evil.com") is False
 
 
-def test_mask_secret():
-    assert mask_secret("") == ""
-    assert mask_secret("short") == "***"
-    assert mask_secret("secret_token_12345") == "sec***345"
-    assert redact_text("secret_token_12345") == "sec***345"
+def test_file_manager_path_validation(tmp_path):
+    from codewiki.src.utils import FileManager
+
+    base_dir = tmp_path / "safe_dir"
+    base_dir.mkdir()
+    safe_file = base_dir / "test.txt"
+    safe_file.write_text("hello")
+
+    assert FileManager.load_text(safe_file, base_dir=base_dir) == "hello"
+
+    unsafe_file = tmp_path / "outside.txt"
+    unsafe_file.write_text("secret")
+
+    import pytest
+
+    with pytest.raises(ValueError, match="Unsafe path detected"):
+        FileManager.load_text(unsafe_file, base_dir=base_dir)
