@@ -56,7 +56,9 @@ class FileManager:
     """Handles file I/O operations."""
 
     @staticmethod
-    def _validate_path(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> Path:
+    def _validate_path(
+        filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None
+    ) -> Path:
         """Sanitize and validate file path against path traversal if base_dir is specified."""
         path_obj = Path(filepath).resolve()
         if base_dir is not None:
@@ -78,7 +80,9 @@ class FileManager:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     @staticmethod
-    def load_json(filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None) -> Optional[Dict[str, Any]]:
+    def load_json(
+        filepath: Union[str, Path], base_dir: Optional[Union[str, Path]] = None
+    ) -> Optional[Dict[str, Any]]:
         """Load JSON from file, return None if file doesn't exist."""
         path_obj = FileManager._validate_path(filepath, base_dir)
         if not path_obj.exists():
