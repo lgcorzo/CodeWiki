@@ -19,6 +19,21 @@ logger = logging.getLogger(__name__)
 
 Completer = Callable[[str], str | None]
 
+
+def redact_text(val: str) -> str:
+    """Redact or mask string values before logging."""
+    if not val:
+        return ""
+    if len(val) > 6:
+        return val[:3] + "***" + val[-3:]
+    return "***"
+
+
+def mask_secret(val: str) -> str:
+    """Mask sensitive string variables before logging."""
+    return redact_text(val)
+
+
 # When whole-repo mode is chosen but leaf entry points touch fewer than this
 # fraction of parsed files, warn that coverage depends on agent exploration.
 LOW_COVERAGE_RATIO = 0.5
@@ -178,7 +193,7 @@ def _cluster_via_llm(
         logger.warning(
             "Empty LLM clustering response for %s (provider returned no "
             "content, likely output truncation); falling back.",
-            module_label,
+            redact_text(module_label),
         )
         return {}
 
@@ -187,7 +202,7 @@ def _cluster_via_llm(
             logger.warning(
                 "Invalid LLM clustering response for %s: missing <GROUPED_COMPONENTS> "
                 "tags; falling back.",
-                module_label,
+                redact_text(module_label),
             )
             return {}
 
@@ -203,7 +218,7 @@ def _cluster_via_llm(
     except Exception as e:  # noqa: BLE001 — a failed LLM call must not abort clustering
         logger.warning(
             "Failed to parse LLM clustering response for %s; falling back. Error: %s.",
-            module_label,
+            redact_text(module_label),
             type(e).__name__,
         )
         return {}
@@ -286,7 +301,7 @@ def cluster_modules(
 
     logger.info(
         "Module clustering input for %s: %d leaf nodes, %d tokens, threshold %d",
-        module_label,
+        redact_text(module_label),
         len(leaf_nodes),
         input_tokens,
         threshold,
@@ -296,7 +311,7 @@ def cluster_modules(
         logger.info(
             "Skipping LLM module clustering for %s because %d tokens fit within the "
             "%d-token threshold; using whole-module documentation mode.",
-            module_label,
+            redact_text(module_label),
             input_tokens,
             threshold,
         )
@@ -320,7 +335,7 @@ def cluster_modules(
 
     logger.info(
         "Requesting LLM module clustering for %s because %d tokens exceed the %d-token threshold.",
-        module_label,
+        redact_text(module_label),
         input_tokens,
         threshold,
     )

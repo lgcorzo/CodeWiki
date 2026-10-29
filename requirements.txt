@@ -2,11 +2,9 @@
 #    uv pip compile pyproject.toml -o requirements.txt
 ag-ui-protocol==1.0.0
     # via pydantic-ai-slim
-aiodns==3.5.0
-    # via aiohttp
 aiofile==3.12.3
     # via py-key-value-aio
-aiohappyeyeballs==2.6.1
+aiohappyeyeballs==2.7.1
     # via aiohttp
 aiohttp==3.14.5
     # via
@@ -19,11 +17,11 @@ annotated-doc==0.0.5
     # via
     #   fastapi
     #   typer
-annotated-types==0.7.0
+annotated-types==0.8.0
     # via pydantic
 anthropic==0.125.0
     # via pydantic-ai-slim
-anyio==4.14.2
+anyio==4.15.1
     # via
     #   anthropic
     #   google-genai
@@ -37,52 +35,51 @@ anyio==4.14.2
     #   sse-starlette
     #   starlette
     #   watchfiles
-argcomplete==3.6.2
+argcomplete==3.7.2
     # via pydantic-ai-slim
-attrs==25.3.0
+attrs==26.1.0
     # via
     #   aiohttp
     #   cyclopts
     #   jsonschema
     #   jsonschema-path
     #   referencing
-authlib==1.8.0
+authlib==1.9.1
     # via fastmcp-slim
-backports-zstd==1.8.0
-    # via aiohttp
 beartype==0.23.1
     # via py-key-value-aio
-boto3==1.43.114
-    # via pydantic-ai-slim
-botocore==1.43.114
+boto3==1.43.118
+    # via
+    #   litellm
+    #   pydantic-ai-slim
+botocore==1.43.118
     # via
     #   boto3
     #   s3transfer
-brotli==1.2.0
-    # via aiohttp
-cachetools==5.5.2
+cachetools==7.2.5
     # via py-key-value-aio
-caio==0.12.9
+caio==0.12.10
     # via aiofile
-certifi==2025.8.3
+certifi==2026.10.23
     # via
+    #   fastmcp-slim
     #   httpcore
     #   httpx
+    #   litellm
+    #   logfire-sdk
     #   requests
-cffi==2.0.0
-    # via
-    #   cryptography
-    #   pycares
-charset-normalizer==3.4.2
+cffi==2.1.1
+    # via cryptography
+charset-normalizer==3.5.2
     # via requests
-click==8.2.1
+click==8.5.0
     # via
     #   codewiki (pyproject.toml)
     #   litellm
     #   uvicorn
 coding-agent-wrapper @ git+https://github.com/anhnh2002/caw@9ec22af22a32ee50392443ae00ca401c3ec4e46b
     # via codewiki (pyproject.toml)
-cohere==7.2.0
+cohere==7.3.0
     # via pydantic-ai-slim
 colorama==0.4.6
     # via codewiki (pyproject.toml)
@@ -93,7 +90,7 @@ cryptography==50.0.2
     #   joserfc
     #   pyjwt
     #   secretstorage
-cyclopts==5.2.0
+cyclopts==5.3.0
     # via fastmcp-slim
 distro==1.9.0
     # via
@@ -113,66 +110,71 @@ eval-type-backport==0.4.0
     # via mistralai
 exceptiongroup==1.3.1
     # via fastmcp-slim
-executing==2.2.0
-    # via logfire
-fastapi==0.143.0
+executing==2.3.0
+    # via logfire-sdk
+fastapi==0.162.0
     # via codewiki (pyproject.toml)
 fastavro==1.13.1
     # via cohere
-fastmcp==3.4.8
+fastmcp==3.4.11
     # via pydantic-ai-slim
-fastmcp-slim==3.4.8
+fastmcp-slim==3.4.11
     # via
     #   fastmcp
     #   pydantic-ai-slim
 fastuuid==0.14.0
     # via litellm
-filelock==3.20.3
+filelock==3.32.7
     # via
     #   codewiki (pyproject.toml)
     #   huggingface-hub
-frozenlist==1.7.0
+    #   litellm
+frozenlist==1.8.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2026.6.0
+fsspec==2026.9.0
     # via huggingface-hub
 genai-prices==0.0.73
     # via pydantic-ai-slim
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.62
+gitpython==3.2.1
     # via codewiki (pyproject.toml)
-google-auth==2.61.0
+google-auth==2.62.0
     # via
     #   google-genai
     #   pydantic-ai-slim
-google-genai==2.29.0
+google-genai==2.33.0
     # via pydantic-ai-slim
-googleapis-common-protos==1.70.0
+googleapis-common-protos==1.76.0
     # via
     #   opentelemetry-exporter-otlp-proto-http
     #   xai-sdk
-griffelib==2.3.2
+griffelib==2.4.1
     # via
     #   fastmcp-slim
     #   pydantic-ai-slim
 groq==1.7.0
     # via pydantic-ai-slim
-grpcio==1.84.0
+grpcio==1.85.0
     # via xai-sdk
 h11==0.16.0
     # via
     #   httpcore
     #   httpcore2
     #   uvicorn
+h2==4.4.1
+    # via httpx
 hf-xet==1.4.3
     # via
     #   huggingface-hub
     #   pydantic-ai-slim
+hpack==4.2.0
+    # via h2
 httpcore==1.0.9
     # via httpx
-httpcore2==2.13.1
+httpcore2==2.16.0
     # via httpx2
 httpx==0.28.1
     # via
@@ -187,16 +189,19 @@ httpx==0.28.1
     #   openai
     #   pydantic-ai-slim
     #   pydantic-graph
-httpx-sse==0.4.0
+httpx-sse==0.4.3
     # via mcp
-httpx2==2.13.1
+httpx2==2.16.0
     # via
     #   genai-prices
     #   mistralai
 huggingface-hub==1.16.1
     # via
+    #   litellm
     #   pydantic-ai-slim
     #   tokenizers
+hyperframe==6.1.0
+    # via h2
 idna==3.20
     # via
     #   anyio
@@ -205,7 +210,7 @@ idna==3.20
     #   httpx2
     #   requests
     #   yarl
-importlib-metadata==8.7.0
+importlib-metadata==8.9.0
     # via litellm
 jaraco-classes==3.4.0
     # via keyring
@@ -221,7 +226,7 @@ jinja2==3.1.6
     # via
     #   codewiki (pyproject.toml)
     #   litellm
-jiter==0.10.0
+jiter==0.18.0
     # via
     #   anthropic
     #   openai
@@ -229,7 +234,7 @@ jmespath==1.1.0
     # via
     #   boto3
     #   botocore
-joserfc==1.7.5
+joserfc==1.7.7
     # via
     #   authlib
     #   fastmcp-slim
@@ -237,33 +242,35 @@ jsonpath-python==1.1.6
     # via mistralai
 jsonref==1.1.0
     # via fastmcp-slim
-jsonschema==4.25.0
+jsonschema==4.26.0
     # via
     #   litellm
     #   mcp
 jsonschema-path==0.5.0
     # via fastmcp-slim
-jsonschema-specifications==2025.4.1
+jsonschema-specifications==2025.9.1
     # via jsonschema
 keyring==25.7.0
     # via
     #   codewiki (pyproject.toml)
     #   py-key-value-aio
-litellm==1.88.6
+litellm==1.106.4
     # via codewiki (pyproject.toml)
-logfire==5.1.1
+logfire==5.3.0
     # via
     #   codewiki (pyproject.toml)
     #   pydantic-ai-slim
-logfire-api==4.1.0
+logfire-api==5.3.0
     # via
     #   pydantic-evals
     #   pydantic-graph
+logfire-sdk==5.3.0
+    # via logfire
 loguru==0.7.3
     # via mermaid-parser-py
-markdown-it-py==3.0.0
+markdown-it-py==4.2.0
     # via rich
-markupsafe==3.0.2
+markupsafe==3.0.4
     # via jinja2
 mcp==1.30.0
     # via
@@ -272,23 +279,23 @@ mcp==1.30.0
     #   fastmcp-slim
 mdurl==0.1.2
     # via markdown-it-py
-mermaid-parser-py==0.0.2
+mermaid-parser-py==0.0.4
     # via codewiki (pyproject.toml)
-mermaid-py==0.8.0
+mermaid-py==0.8.4
     # via
     #   codewiki (pyproject.toml)
     #   mermaid-parser-py
-mistralai==3.2.0
+mistralai==3.5.0
     # via pydantic-ai-slim
-more-itertools==11.1.0
+more-itertools==11.2.1
     # via
     #   jaraco-classes
     #   jaraco-functools
-multidict==6.6.3
+multidict==7.2.1
     # via
     #   aiohttp
     #   yarl
-networkx==3.5
+networkx==3.7
     # via
     #   codewiki (pyproject.toml)
     #   mermaid-parser-py
@@ -301,73 +308,82 @@ openai==2.54.0
     #   pydantic-ai-slim
 openapi-pydantic==0.6.0
     # via fastmcp-slim
-opentelemetry-api==1.44.0
+opentelemetry-api==1.45.1
     # via
     #   fastapi
     #   fastmcp-slim
+    #   logfire-sdk
     #   mistralai
+    #   opentelemetry-exporter-http-transport
     #   opentelemetry-exporter-otlp-proto-http
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-httpx
     #   opentelemetry-sdk
     #   opentelemetry-semantic-conventions
     #   pydantic-ai-slim
-opentelemetry-exporter-otlp-proto-common==1.44.0
+opentelemetry-exporter-http-transport==0.66b1
     # via opentelemetry-exporter-otlp-proto-http
-opentelemetry-exporter-otlp-proto-http==1.44.0
-    # via logfire
-opentelemetry-instrumentation==0.65b0
+opentelemetry-exporter-otlp-common==0.66b1
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-common==1.45.1
+    # via opentelemetry-exporter-otlp-proto-http
+opentelemetry-exporter-otlp-proto-http==1.45.1
+    # via logfire-sdk
+opentelemetry-instrumentation==0.66b1
     # via
-    #   logfire
+    #   logfire-sdk
     #   opentelemetry-instrumentation-httpx
-opentelemetry-instrumentation-httpx==0.65b0
-    # via logfire
-opentelemetry-proto==1.44.0
+opentelemetry-instrumentation-httpx==0.66b1
+    # via logfire-sdk
+opentelemetry-proto==1.45.1
     # via
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-http
-opentelemetry-sdk==1.44.0
+opentelemetry-sdk==1.45.1
     # via
-    #   logfire
+    #   logfire-sdk
+    #   opentelemetry-exporter-otlp-common
     #   opentelemetry-exporter-otlp-proto-http
     #   xai-sdk
-opentelemetry-semantic-conventions==0.65b0
+opentelemetry-semantic-conventions==0.66b1
     # via
+    #   logfire-sdk
     #   mistralai
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-httpx
     #   opentelemetry-sdk
-opentelemetry-util-http==0.65b0
+opentelemetry-util-http==0.66b1
     # via opentelemetry-instrumentation-httpx
 packaging==25.0
     # via
     #   fastmcp-slim
     #   huggingface-hub
+    #   litellm
     #   opentelemetry-instrumentation
     #   xai-sdk
 pathable==0.6.0
     # via jsonschema-path
-pathspec==0.12.1
+pathspec==1.1.1
     # via codewiki (pyproject.toml)
-platformdirs==4.3.8
+platformdirs==4.13.5
     # via fastmcp-slim
-pminit==1.2.0
+pminit==1.4.1
     # via pythonmonkey
-prompt-toolkit==3.0.51
+prompt-toolkit==3.0.53
     # via pydantic-ai-slim
-propcache==0.3.2
+propcache==0.5.4
     # via
     #   aiohttp
     #   yarl
-protobuf==5.29.6
+protobuf==7.36.2
     # via
     #   codewiki (pyproject.toml)
     #   googleapis-common-protos
-    #   logfire
+    #   logfire-sdk
     #   opentelemetry-proto
     #   temporalio
     #   xai-sdk
-psutil==7.0.0
+psutil==7.2.2
     # via codewiki (pyproject.toml)
 py-key-value-aio==0.4.6
     # via fastmcp-slim
@@ -377,11 +393,9 @@ pyasn1==0.6.4
     #   pyasn1-modules
 pyasn1-modules==0.4.2
     # via google-auth
-pycares==4.11.0
-    # via aiodns
-pycparser==2.23
+pycparser==3.12
     # via cffi
-pydantic==2.12.5
+pydantic==2.14.1
     # via
     #   codewiki (pyproject.toml)
     #   ag-ui-protocol
@@ -404,35 +418,36 @@ pydantic==2.12.5
     #   pydantic-handlebars
     #   pydantic-settings
     #   xai-sdk
-pydantic-ai==1.107.7
+pydantic-ai==1.107.9
     # via codewiki (pyproject.toml)
-pydantic-ai-slim==1.107.7
+pydantic-ai-slim==1.107.9
     # via
     #   pydantic-ai
     #   pydantic-evals
-pydantic-core==2.41.5
+pydantic-core==2.50.1
     # via
     #   cohere
     #   pydantic
-pydantic-evals==1.107.7
+pydantic-evals==1.107.9
     # via pydantic-ai-slim
-pydantic-graph==1.107.7
+pydantic-graph==1.107.9
     # via pydantic-ai-slim
 pydantic-handlebars==0.2.1
     # via pydantic-ai-slim
-pydantic-settings==2.10.1
+pydantic-settings==2.16.1
     # via
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
+    #   litellm
     #   mcp
-pygments==2.20.0
+pygments==2.21.0
     # via
     #   codewiki (pyproject.toml)
     #   rich
     #   rich-rst
 pyjwt==2.15.1
     # via mcp
-pyperclip==1.9.0
+pyperclip==1.11.0
     # via
     #   fastmcp-slim
     #   pydantic-ai-slim
@@ -440,7 +455,7 @@ python-dateutil==2.9.0.post0
     # via
     #   botocore
     #   mistralai
-python-dotenv==1.2.2
+python-dotenv==1.2.4
     # via
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
@@ -451,52 +466,55 @@ python-multipart==0.0.32
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
     #   mcp
-pythonmonkey==1.2.0
+pythonmonkey==1.4.1
     # via mermaid-parser-py
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via
     #   codewiki (pyproject.toml)
     #   fastmcp-slim
     #   huggingface-hub
     #   jsonschema-path
+    #   litellm
     #   pydantic-ai-slim
     #   pydantic-evals
-referencing==0.36.2
+referencing==0.37.0
     # via
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
-regex==2025.7.34
+regex==2026.9.29
     # via tiktoken
-requests==2.33.0
+requests==2.34.2
     # via
     #   codewiki (pyproject.toml)
     #   cohere
     #   google-auth
     #   google-genai
+    #   logfire-sdk
     #   mermaid-py
+    #   opentelemetry-exporter-http-transport
     #   opentelemetry-exporter-otlp-proto-http
     #   pydantic-ai-slim
     #   tiktoken
     #   xai-sdk
-rich==14.1.0
+rich==15.0.0
     # via
     #   codewiki (pyproject.toml)
     #   coding-agent-wrapper
     #   cyclopts
     #   fastmcp-slim
-    #   logfire
+    #   logfire-sdk
     #   pydantic-ai-slim
     #   pydantic-evals
     #   rich-rst
     #   typer
 rich-rst==2.2.0
     # via cyclopts
-rpds-py==0.26.0
+rpds-py==2026.9.1
     # via
     #   jsonschema
     #   referencing
-s3transfer==0.19.2
+s3transfer==0.19.3
     # via boto3
 secretstorage==3.5.0
     # via keyring
@@ -504,7 +522,7 @@ shellingham==1.5.4
     # via typer
 six==1.17.0
     # via python-dateutil
-smmap==5.0.2
+smmap==5.0.3
     # via gitdb
 sniffio==1.3.1
     # via
@@ -512,17 +530,18 @@ sniffio==1.3.1
     #   google-genai
     #   groq
     #   openai
-sse-starlette==3.0.2
+sse-starlette==3.6.0
     # via mcp
-starlette==1.7.0
+starlette==1.10.0
     # via
     #   fastapi
     #   fastmcp-slim
     #   mcp
     #   pydantic-ai-slim
+    #   sse-starlette
 temporalio==1.34.0
     # via pydantic-ai-slim
-tenacity==8.5.0
+tenacity==9.1.4
     # via
     #   google-genai
     #   pydantic-ai-slim
@@ -534,47 +553,41 @@ tokenizers==0.23.3
     # via
     #   cohere
     #   litellm
-tqdm==4.67.1
+tqdm==4.70.1
     # via
     #   huggingface-hub
     #   openai
-tree-sitter==0.23.2
+tree-sitter==0.26.0
     # via
     #   codewiki (pyproject.toml)
     #   tree-sitter-language-pack
-tree-sitter-c==0.21.4
+tree-sitter-c==0.24.2
     # via codewiki (pyproject.toml)
-tree-sitter-c-sharp==0.23.1
-    # via
-    #   codewiki (pyproject.toml)
-    #   tree-sitter-language-pack
+tree-sitter-c-sharp==0.23.5
+    # via codewiki (pyproject.toml)
 tree-sitter-cpp==0.23.4
     # via codewiki (pyproject.toml)
-tree-sitter-embedded-template==0.23.2
-    # via tree-sitter-language-pack
 tree-sitter-java==0.23.5
     # via codewiki (pyproject.toml)
-tree-sitter-javascript==0.21.4
+tree-sitter-javascript==0.25.0
     # via codewiki (pyproject.toml)
 tree-sitter-kotlin==1.1.0
     # via codewiki (pyproject.toml)
-tree-sitter-language-pack==0.8.0
+tree-sitter-language-pack==1.22.1
     # via codewiki (pyproject.toml)
 tree-sitter-php==0.25.1
     # via codewiki (pyproject.toml)
-tree-sitter-python==0.23.6
+tree-sitter-python==0.25.0
     # via codewiki (pyproject.toml)
 tree-sitter-ruby==0.23.1
     # via codewiki (pyproject.toml)
-tree-sitter-rust==0.23.2
+tree-sitter-rust==0.23.3
     # via codewiki (pyproject.toml)
 tree-sitter-scala==0.23.4
     # via codewiki (pyproject.toml)
-tree-sitter-typescript==0.21.2
+tree-sitter-typescript==0.23.2
     # via codewiki (pyproject.toml)
-tree-sitter-yaml==0.7.1
-    # via tree-sitter-language-pack
-truststore==0.10.4
+truststore==0.10.5
     # via
     #   httpcore2
     #   httpx2
@@ -601,7 +614,8 @@ typing-extensions==4.16.0
     #   grpcio
     #   httpx2
     #   huggingface-hub
-    #   logfire
+    #   litellm
+    #   logfire-sdk
     #   mcp
     #   nexus-rpc
     #   openai
@@ -612,12 +626,13 @@ typing-extensions==4.16.0
     #   py-key-value-aio
     #   pydantic
     #   pydantic-core
+    #   pydantic-settings
     #   referencing
     #   starlette
     #   temporalio
     #   typing-inspection
     #   xai-sdk
-typing-inspection==0.4.2
+typing-inspection==0.4.4
     # via
     #   fastapi
     #   mcp
@@ -641,19 +656,19 @@ uvicorn==0.54.0
     #   mcp
 watchfiles==1.3.0
     # via fastmcp-slim
-wcwidth==0.2.13
+wcwidth==0.9.4
     # via prompt-toolkit
-websockets==15.0.1
+websockets==17.3
     # via
     #   fastmcp-slim
     #   google-genai
-wrapt==1.17.2
+wrapt==2.5.1
     # via
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-httpx
-xai-sdk==1.20.0
+xai-sdk==1.21.0
     # via pydantic-ai-slim
 yarl==1.25.1
     # via aiohttp
-zipp==3.23.0
+zipp==4.1.2
     # via importlib-metadata

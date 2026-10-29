@@ -124,7 +124,11 @@ async def index():
             detail="Documentation folder not configured. Please set DOCS_FOLDER environment variable or run with --docs-folder argument.",
         )
 
-    overview_file = Path(DOCS_FOLDER) / "overview.md"
+    base_dir = os.path.realpath(str(DOCS_FOLDER))
+    overview_file = Path(os.path.realpath(os.path.join(base_dir, "overview.md")))
+
+    if not is_safe_path(overview_file, base_dir):
+        raise HTTPException(status_code=403, detail="Access denied")
 
     if not overview_file.exists():
         raise HTTPException(
