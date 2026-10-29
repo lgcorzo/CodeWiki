@@ -186,18 +186,15 @@ def _cluster_via_llm(
 
     if not response:
         logger.warning(
-            "Empty LLM clustering response for %s (provider returned no "
-            "content, likely output truncation); falling back.",
-            mask_secret(module_label),
+            "Empty LLM clustering response (provider returned no content, likely output truncation); "
+            "falling back."
         )
         return {}
 
     try:
         if "<GROUPED_COMPONENTS>" not in response or "</GROUPED_COMPONENTS>" not in response:
             logger.warning(
-                "Invalid LLM clustering response for %s: missing <GROUPED_COMPONENTS> "
-                "tags; falling back.",
-                mask_secret(module_label),
+                "Invalid LLM clustering response: missing <GROUPED_COMPONENTS> tags; falling back."
             )
             return {}
 
@@ -212,8 +209,7 @@ def _cluster_via_llm(
 
     except Exception as e:  # noqa: BLE001 — a failed LLM call must not abort clustering
         logger.warning(
-            "Failed to parse LLM clustering response for %s; falling back. Error: %s.",
-            mask_secret(module_label),
+            "Failed to parse LLM clustering response; falling back. Error: %s.",
             type(e).__name__,
         )
         return {}
