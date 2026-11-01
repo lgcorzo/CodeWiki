@@ -47,8 +47,11 @@ def format_potential_core_components(
         if leaf_node in components:
             valid_leaf_nodes.append(leaf_node)
         else:
-            sanitized_node = re.sub(r'[\r\n\t]', '', str(leaf_node))[:100]
-            logger.warning("Skipping invalid leaf node '%s' - not found in components", sanitized_node)
+            sanitized_node = re.sub(r"[
+	]", "", str(leaf_node))[:100]
+            logger.warning(
+                "Skipping invalid leaf node '%s' - not found in components", sanitized_node
+            )
 
     # group leaf nodes by file
     leaf_nodes_by_file = defaultdict(list)
