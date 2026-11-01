@@ -46,7 +46,7 @@ def format_potential_core_components(
         if leaf_node in components:
             valid_leaf_nodes.append(leaf_node)
         else:
-            logger.warning(f"Skipping invalid leaf node '{leaf_node}' - not found in components")
+            logger.warning("Skipping invalid leaf node - not found in components")
 
     # group leaf nodes by file
     leaf_nodes_by_file = defaultdict(list)
