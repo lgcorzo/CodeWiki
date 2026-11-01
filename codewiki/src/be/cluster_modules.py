@@ -1,4 +1,5 @@
 import ast
+import re
 import logging
 from collections import defaultdict
 from collections.abc import Callable
