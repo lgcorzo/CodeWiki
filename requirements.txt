@@ -384,7 +384,7 @@ psutil==7.2.2
     # via codewiki (pyproject.toml)
 py-key-value-aio==0.4.6
     # via fastmcp-slim
-pyasn1==0.6.4
+pyasn1==0.6.5
     # via
     #   codewiki (pyproject.toml)
     #   pyasn1-modules
