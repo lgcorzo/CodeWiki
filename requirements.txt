@@ -327,30 +327,30 @@ opentelemetry-exporter-otlp-proto-common==1.45.1
     # via opentelemetry-exporter-otlp-proto-http
 opentelemetry-exporter-otlp-proto-http==1.45.1
     # via logfire-sdk
-opentelemetry-instrumentation==0.66b1
+opentelemetry-instrumentation==0.66b2
     # via
     #   logfire-sdk
     #   opentelemetry-instrumentation-httpx
-opentelemetry-instrumentation-httpx==0.66b1
+opentelemetry-instrumentation-httpx==0.66b2
     # via logfire-sdk
 opentelemetry-proto==1.45.1
     # via
     #   opentelemetry-exporter-otlp-proto-common
     #   opentelemetry-exporter-otlp-proto-http
-opentelemetry-sdk==1.45.1
+opentelemetry-sdk==1.45.2
     # via
     #   logfire-sdk
     #   opentelemetry-exporter-otlp-common
     #   opentelemetry-exporter-otlp-proto-http
     #   xai-sdk
-opentelemetry-semantic-conventions==0.66b1
+opentelemetry-semantic-conventions==0.66b2
     # via
     #   logfire-sdk
     #   mistralai
     #   opentelemetry-instrumentation
     #   opentelemetry-instrumentation-httpx
     #   opentelemetry-sdk
-opentelemetry-util-http==0.66b1
+opentelemetry-util-http==0.66b2
     # via opentelemetry-instrumentation-httpx
 packaging==25.0
     # via
