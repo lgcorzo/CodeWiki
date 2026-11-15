@@ -1,3 +1,5 @@
+Maintained fork of [FSoft-AI4Code/CodeWiki](https://github.com/FSoft-AI4Code/CodeWiki). It applies security patches and maintenance fixes on top of upstream. Part of the [Dark Gravity](https://github.com/lgcorzo/rust_CACD_autonomous_factory) factory. License: MIT.
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./img/black-background-logo.png">
@@ -295,3 +297,10 @@ CodeWiki is proudly sponsored by **FPT Software**.
 ## License
 
 MIT. See [LICENSE](./LICENSE).
+
+---
+
+### Fork Maintenance & Agent Transparency
+
+- **Changes vs. Upstream:** Security dependency updates, CI/CD workflow fixes, and CodeQL remediation are tracked in the [commit history](https://github.com/lgcorzo/CodeWiki/commits) and [Pull Requests](https://github.com/lgcorzo/CodeWiki/pulls?q=is%3Apr).
+- **Agent Tagging (`[agent]`):** Commits and pull requests generated automatically by agents in the Dark Gravity pipeline are prefixed with `[agent]` to distinguish automated maintenance from manual work.
